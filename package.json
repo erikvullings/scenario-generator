@@ -1,0 +1,52 @@
+{
+  "name": "gui",
+  "private": "true",
+  "version": "0.0.1",
+  "description": "GUI dashboard.",
+  "scripts": {
+    "clean": "rimraf ./.parcel-cache ./.cache ./dist",
+    "cleanup": "npm run clean",
+    "dev": "npx rspack serve",
+    "start": "npm run dev",
+    "build": "npx rspack build",
+    "build.old": "webpack --env production",
+    "build:domain": "npm run clean && npm run build",
+    "link": "pnpm link project-board-shared",
+    "link2": "npm link mithril-ui-form"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikvullings/capability-assessment-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erikvullings/capability-assessment-tool/issues"
+  },
+  "homepage": "https://github.com/erikvullings/capability-assessment-tool#readme",
+  "author": "Erik Vullings <erik.vullings@tno.nl> (http://www.tno.nl)",
+  "keywords": [
+    "TNO",
+    "capability development",
+    "capability assessment",
+    "roadmap"
+  ],
+  "license": "MIT",
+  "app": "src/index.html",
+  "target": "web",
+  "dependencies": {
+    "material-icons": "^1.13.9",
+    "materialize-css": "^1.0.0",
+    "meiosis-setup": "^6.2.3",
+    "mithril": "^2.2.2",
+    "mithril-materialized": "^1.0.1",
+    "mithril-ui-form": "^1.9.1",
+    "translate.js": "1.3.2"
+  },
+  "devDependencies": {
+    "@rspack/cli": "^0.2.10",
+    "@types/materialize-css": "^1.0.11",
+    "@types/mithril": "^2.0.12",
+    "dotenv-webpack": "^8.0.1",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.1.6"
+  }
+}
