@@ -13,7 +13,7 @@ export type Inconsistency = {
 
 export type Item = {
   id: ID;
-  name: string;
+  label: string;
   /** Description of the item, may use markdown */
   desc: string;
 };
@@ -69,13 +69,13 @@ export const defaultModel = {
   lastUpdate: new Date().valueOf(),
   scenario: {
     id: 'demo1',
-    name: 'Demo',
+    label: 'Demo',
     desc: 'Demo scenario',
     inconsistencies: [] as Inconsistency[],
     categories: [
       {
         id: 'threat',
-        name: 'Threat',
+        label: 'Threat',
         componentIds: [
           'ThreatDirection',
           'Impact',
@@ -87,7 +87,7 @@ export const defaultModel = {
       },
       {
         id: 'context',
-        name: 'Context',
+        label: 'Context',
         componentIds: [
           'WeatherType',
           'WeatherBehaviour',
@@ -101,122 +101,122 @@ export const defaultModel = {
     components: [
       {
         id: 'ThreatDirection',
-        name: 'Threat direction',
+        label: 'Threat direction',
         values: [
-          { id: 'df62efe6', name: 'Hannibal' },
-          { id: '70630364', name: 'The Romans' },
-          { id: '82d5d4f5', name: 'Verweggistan' },
+          { id: 'df62efe6', label: 'Hannibal' },
+          { id: '70630364', label: 'The Romans' },
+          { id: '82d5d4f5', label: 'Verweggistan' },
         ],
       },
       {
         id: 'Impact',
-        name: 'Impact',
+        label: 'Impact',
         values: [
-          { id: '5c532a23', name: 'Low' },
-          { id: '16ad9a77', name: 'Medium' },
-          { id: 'b894abb6', name: 'High' },
+          { id: '5c532a23', label: 'Low' },
+          { id: '16ad9a77', label: 'Medium' },
+          { id: 'b894abb6', label: 'High' },
         ],
       },
       {
         id: 'Motivation',
-        name: 'Motivation',
+        label: 'Motivation',
         values: [
-          { id: 'f4ab7a7a', name: 'Money' },
-          { id: 'ff550f8f', name: 'Justice' },
-          { id: '22b4867e', name: 'Revenge' },
+          { id: 'f4ab7a7a', label: 'Money' },
+          { id: 'ff550f8f', label: 'Justice' },
+          { id: '22b4867e', label: 'Revenge' },
         ],
       },
       {
         id: 'ModusOperandiDuringExecution',
-        name: 'Modus operandi during execution',
+        label: 'Modus operandi during execution',
         values: [
           {
             id: '7ed25fa5',
-            name: 'Sniper attack',
+            label: 'Sniper attack',
             type: 'ModusOperandiDuringExecution',
           },
           {
             id: '1f9b68c9',
-            name: 'Kidnapping',
+            label: 'Kidnapping',
             type: 'ModusOperandiDuringExecution',
           },
           {
             id: '5cc5e352',
-            name: 'Singing',
+            label: 'Singing',
             type: 'ModusOperandiDuringExecution',
           },
         ],
       },
       {
         id: 'Equipment',
-        name: 'Equipment',
+        label: 'Equipment',
         values: [
-          { id: 'b4218a1f', name: 'None' },
-          { id: '8f6185f7', name: 'Drone' },
-          { id: 'cb02878d', name: 'Bomb' },
-          { id: '9d645efb', name: 'Helicopter' },
-          { id: '3a4398c7', name: 'Hammer' },
+          { id: 'b4218a1f', label: 'None' },
+          { id: '8f6185f7', label: 'Drone' },
+          { id: 'cb02878d', label: 'Bomb' },
+          { id: '9d645efb', label: 'Helicopter' },
+          { id: '3a4398c7', label: 'Hammer' },
         ],
       },
       {
         id: 'Responsibility',
-        name: 'Responsibility',
+        label: 'Responsibility',
         values: [
-          { id: 'f44d22be', name: 'Private' },
-          { id: '20f9a6ed', name: 'Public' },
+          { id: 'f44d22be', label: 'Private' },
+          { id: '20f9a6ed', label: 'Public' },
         ],
       },
       {
         id: 'WeatherType',
-        name: 'Weather type',
+        label: 'Weather type',
         values: [
-          { id: 'b9fe2b73', name: 'Rainy' },
-          { id: '478581c1', name: 'Sunny' },
-          { id: 'b855ac10', name: 'Windy' },
-          { id: '24c73f36', name: 'Cloudy' },
+          { id: 'b9fe2b73', label: 'Rainy' },
+          { id: '478581c1', label: 'Sunny' },
+          { id: 'b855ac10', label: 'Windy' },
+          { id: '24c73f36', label: 'Cloudy' },
         ],
       },
       {
         id: 'WeatherBehaviour',
-        name: 'Weather behaviour',
+        label: 'Weather behaviour',
         values: [
-          { id: '0ff8041e', name: 'Stable' },
-          { id: '894a9bcb', name: 'Changing' },
+          { id: '0ff8041e', label: 'Stable' },
+          { id: '894a9bcb', label: 'Changing' },
         ],
       },
       {
         id: 'TypeOfObject',
-        name: 'Type of object',
+        label: 'Type of object',
         values: [
-          { id: '29a303b3', name: 'Church' },
-          { id: '2e7df143', name: 'Park' },
-          { id: 'e11282fb', name: 'Palace' },
-          { id: '9a1b3256', name: 'Airport' },
+          { id: '29a303b3', label: 'Church' },
+          { id: '2e7df143', label: 'Park' },
+          { id: 'e11282fb', label: 'Palace' },
+          { id: '9a1b3256', label: 'Airport' },
         ],
       },
       {
         id: 'AvailableBudget',
-        name: 'Available budget',
+        label: 'Available budget',
         values: [
-          { id: '90e1ba48', name: 'Knowledge' },
-          { id: 'f961174c', name: 'Water' },
+          { id: '90e1ba48', label: 'Knowledge' },
+          { id: 'f961174c', label: 'Water' },
         ],
       },
       {
         id: 'OpenCompartments',
-        name: 'Open compartments',
+        label: 'Open compartments',
         values: [
-          { id: '01c3940a', name: 'Open' },
-          { id: '56b7fa45', name: 'Closed' },
+          { id: '01c3940a', label: 'Open' },
+          { id: '56b7fa45', label: 'Closed' },
         ],
       },
       {
         id: 'Location',
-        name: 'Location',
+        label: 'Location',
         values: [
-          { id: 'ea57f820', name: 'Vietnam' },
-          { id: 'b8bd8bc3', name: 'Washington' },
-          { id: '8fb1e1ab', name: 'Buitenpost' },
+          { id: 'ea57f820', label: 'Vietnam' },
+          { id: 'b8bd8bc3', label: 'Washington' },
+          { id: '8fb1e1ab', label: 'Buitenpost' },
         ],
       },
     ],

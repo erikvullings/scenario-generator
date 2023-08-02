@@ -10,94 +10,27 @@ import {
   MeiosisComponent,
   mutateScenarioComponent,
   setPage,
+  i18n,
+  t,
 } from '../services';
 import { FlatButton, ModalPanel, Tabs } from 'mithril-materialized';
 import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
 
-const form = [
-  { id: 'id', autogenerate: 'id' },
-  { id: 'name', type: 'text', label: 'NAME' },
-  { id: 'desc', type: 'textarea', label: 'DESCRIPTION' },
-  {
-    id: 'context',
-    type: 'select',
-    label: 'CONTEXT',
-    value: 'none',
-    options: [
-      { id: 'none', label: 'NONE' },
-      { id: 'location', label: 'LOCATION' },
-      { id: 'locationType', label: 'LOCATION_TYPE' },
-    ],
-  },
-  {
-    id: 'locationType',
-    show: ['context=location'],
-    type: 'select',
-    label: 'Type of location',
-    options: [
-      { id: 'name', label: 'NAME' },
-      { id: 'coords', label: 'COORDINATES' },
-    ],
-  },
-  {
-    id: 'location',
-    show: ['context=location & locationType=name'],
-    type: 'text',
-    label: 'LOCATION_NAME',
-  },
-  {
-    id: 'lat',
-    show: ['context=location & locationType=coords'],
-    type: 'number',
-    label: 'LATITUDE',
-  },
-  {
-    id: 'lon',
-    show: ['context=location & locationType=coords'],
-    type: 'number',
-    label: 'LONGITUDE',
-  },
-  {
-    id: 'locationTypeType',
-    show: ['context=locationType'],
-    type: 'select',
-    label: 'Type of location',
-    options: [
-      { id: 'list', label: 'PICK_FROM_LIST' },
-      { id: 'keyValue', label: 'ENTER_KEY_VALUE' },
-    ],
-  },
-  {
-    id: 'osmTypeId',
-    show: ['context=locationType & locationTypeType=list'],
-    type: 'select',
-    label: 'NAME',
-    options: OsmTypes.map(({ id, name: label }) => ({ id, label })),
-  },
-  {
-    id: 'value',
-    show: ['context=locationType & locationTypeType=keyValue'],
-    type: 'text',
-    label: 'KEY',
-  },
-  {
-    id: 'key',
-    show: ['context=locationType & locationTypeType=keyValue'],
-    type: 'text',
-    label: 'VALUE',
-  },
-] as UIForm<ContextualItem>;
-
-const BoxItem: MeiosisComponent<{ id: ID; item: ContextualItem }> = () => {
+const BoxItem: MeiosisComponent<{
+  id: ID;
+  item: ContextualItem;
+  form: UIForm<ContextualItem>;
+}> = () => {
   let obj: ContextualItem;
+
   return {
     oninit: ({ attrs: { item } }) => (obj = { ...item }),
     view: ({ attrs }) => {
-      const { item, id } = attrs;
+      const { item, id, form } = attrs;
       return [
         m('li.kanban-item.card.widget', [
           m('.card-content', [
-            m('span.card-title', item.name),
+            m('span.card-title', item.label),
             m(FlatButton, {
               className: 'top-right widget-link',
               iconName: 'edit',
@@ -108,25 +41,26 @@ const BoxItem: MeiosisComponent<{ id: ID; item: ContextualItem }> = () => {
         ]),
         m(ModalPanel, {
           id: item.id,
-          title: 'EDIT_COMPONENT',
+          title: t('EDIT_COMPONENT'),
           fixedFooter: true,
           description: m(LayoutForm, {
             form,
             obj,
+            i18n: i18n.i18n,
           } as FormAttributes<ContextualItem>),
           // options: { opacity: 0.7 },
           buttons: [
             {
-              label: 'CANCEL',
+              label: t('CANCEL'),
             },
             {
-              label: 'DELETE',
+              label: t('DELETE'),
               onclick: () => {
                 mutateScenarioComponent(attrs, id, obj, 'delete');
               },
             },
             {
-              label: 'OK',
+              label: t('OK'),
               onclick: () => {
                 mutateScenarioComponent(attrs, id, obj, 'update');
               },
@@ -138,26 +72,30 @@ const BoxItem: MeiosisComponent<{ id: ID; item: ContextualItem }> = () => {
   };
 };
 
-const BoxHeader: MeiosisComponent<{ sc: ScenarioComponent }> = () => {
+const BoxHeader: MeiosisComponent<{
+  sc: ScenarioComponent;
+  form: UIForm<ContextualItem>;
+}> = () => {
   let obj = {} as ContextualItem;
   return {
     view: ({ attrs }) => {
-      const { sc } = attrs;
+      const { sc, form } = attrs;
       const { id } = sc;
 
       return [
         m('li.kanban-header.widget', [
-          m('.span.title.truncate.left.ml10', sc.name),
+          m('.span.title.truncate.left.ml10', sc.label),
           m(FlatButton, {
             className: 'widget-link',
             iconName: 'add',
             iconClass: 'no-gutter',
             modalId: sc.id,
+            i18n: i18n.i18n,
           }),
         ]),
         m(ModalPanel, {
           id: sc.id,
-          title: 'ADD_COMPONENT',
+          title: t('ADD_COMPONENT'),
           fixedFooter: true,
           description: m(LayoutForm, {
             form,
@@ -166,10 +104,10 @@ const BoxHeader: MeiosisComponent<{ sc: ScenarioComponent }> = () => {
           // options: { opacity: 0.7 },
           buttons: [
             {
-              label: 'CANCEL',
+              label: t('CANCEL'),
             },
             {
-              label: 'OK',
+              label: t('OK'),
               onclick: () => {
                 const item = { ...obj };
                 obj = {} as ContextualItem;
@@ -183,26 +121,35 @@ const BoxHeader: MeiosisComponent<{ sc: ScenarioComponent }> = () => {
   };
 };
 
-const BoxRow: MeiosisComponent<{ sc: ScenarioComponent }> = () => {
+const BoxRow: MeiosisComponent<{
+  sc: ScenarioComponent;
+  form: UIForm<ContextualItem>;
+}> = () => {
   return {
     view: ({ attrs }) => {
-      const { sc } = attrs;
+      const { sc, form } = attrs;
 
       return m('li', [
         m(
           'ul.kanban-row',
-          m(BoxHeader, { ...attrs, sc }),
-          sc.values.map((c) => m(BoxItem, { ...attrs, id: sc.id, item: c }))
+          m(BoxHeader, { ...attrs, sc, form }),
+          sc.values.map((c) =>
+            m(BoxItem, { ...attrs, id: sc.id, item: c, form })
+          )
         ),
       ]);
     },
   };
 };
 
-const BoxView: MeiosisComponent<{ categoryId: number }> = () => {
+const BoxView: MeiosisComponent<{
+  categoryId: number;
+  form: UIForm<ContextualItem>;
+}> = () => {
   return {
     view: ({ attrs }) => {
       const {
+        form,
         categoryId,
         state: {
           model: { scenario },
@@ -217,7 +164,7 @@ const BoxView: MeiosisComponent<{ categoryId: number }> = () => {
       return m('ul.kanban', [
         // m(
         // '.kanban-row',
-        scs.map((sc) => m(BoxRow, { ...attrs, sc })),
+        scs.map((sc) => m(BoxRow, { ...attrs, sc, form })),
         // ),
       ]);
     },
@@ -225,6 +172,80 @@ const BoxView: MeiosisComponent<{ categoryId: number }> = () => {
 };
 
 export const CreateBoxPage: MeiosisComponent = () => {
+  const form = [
+    { id: 'id', autogenerate: 'id' },
+    { id: 'label', type: 'text', label: t('NAME') },
+    { id: 'desc', type: 'textarea', label: t('DESCRIPTION') },
+    {
+      id: 'context',
+      type: 'select',
+      label: t('CONTEXT'),
+      value: 'none',
+      options: [
+        { id: 'none', label: t('NONE') },
+        { id: 'location', label: t('LOCATION') },
+        { id: 'locationType', label: t('LOCATION_TYPE') },
+      ],
+    },
+    {
+      id: 'locationType',
+      show: ['context=location'],
+      type: 'select',
+      label: t('LOCATION_TYPE'),
+      options: [
+        { id: 'label', label: t('NAME') },
+        { id: 'coords', label: t('COORDINATES') },
+      ],
+    },
+    {
+      id: 'location',
+      show: ['context=location & locationType=name'],
+      type: 'text',
+      label: t('LOCATION_NAME'),
+    },
+    {
+      id: 'lat',
+      show: ['context=location & locationType=coords'],
+      type: 'number',
+      label: t('LATITUDE'),
+    },
+    {
+      id: 'lon',
+      show: ['context=location & locationType=coords'],
+      type: 'number',
+      label: t('LONGITUDE'),
+    },
+    {
+      id: 'locationTypeType',
+      show: ['context=locationType'],
+      type: 'select',
+      label: t('LOCATION_TYPE'),
+      options: [
+        { id: 'list', label: t('PICK_FROM_LIST') },
+        { id: 'keyValue', label: t('ENTER_KEY_VALUE') },
+      ],
+    },
+    {
+      id: 'osmTypeId',
+      show: ['context=locationType & locationTypeType=list'],
+      type: 'select',
+      label: t('NAME'),
+      options: OsmTypes.map(({ id, name }) => ({ id, label: name })),
+    },
+    {
+      id: 'value',
+      show: ['context=locationType & locationTypeType=keyValue'],
+      type: 'text',
+      label: t('KEY'),
+    },
+    {
+      id: 'key',
+      show: ['context=locationType & locationTypeType=keyValue'],
+      type: 'text',
+      label: t('VALUE'),
+    },
+  ] as UIForm<ContextualItem>;
+
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.DEFINE_BOX),
     view: ({ attrs }) => {
@@ -234,19 +255,18 @@ export const CreateBoxPage: MeiosisComponent = () => {
       const { categories } = scenario;
 
       return [
-        m('.row', []),
         m(
-          '.row',
+          '.create-box-page',
           categories.length > 1
             ? m(Tabs, {
                 tabs: categories.map((c, categoryId) => ({
                   id: c.id,
-                  title: c.name,
-                  vnode: m(BoxView, { ...attrs, categoryId }),
+                  title: c.label,
+                  vnode: m(BoxView, { ...attrs, categoryId, form }),
                 })),
               })
             : categories.length === 1
-            ? m(BoxView, { ...attrs, categoryId: 0 })
+            ? m(BoxView, { ...attrs, categoryId: 0, form })
             : 'FIRST DEFINE SOME COMPONENT CATEGORIES'
         ),
       ];

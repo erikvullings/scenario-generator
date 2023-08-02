@@ -1,3 +1,4 @@
+import { I18n } from 'mithril-ui-form';
 import translate, { Options, Translate } from 'translate.js';
 import { plural_EN } from 'translate.js/pluralize';
 
@@ -8,11 +9,48 @@ export const messages = {
   home_route: '/home',
   about: 'about',
   about_route: '/about',
+  settings: 'settings',
+  settings_route: '/settings',
   DEFINE_BOX: 'Create',
   define_box_route: '/create',
   DOWNLOAD: 'Download',
   UPLOAD: 'Upload',
   CLEAR: 'Clear',
+  CANCEL: 'Cancel',
+  DELETE: 'Delete',
+  YES: 'Yes',
+  NO: 'No',
+  OK: 'Ok',
+  NAME: 'Name',
+  DESCRIPTION: 'Description',
+  CATEGORIES: 'Categories',
+  DIMENSIONS: 'Dimensions',
+  CONTEXT: 'Context',
+  NONE: 'None',
+  LOCATION: 'Location',
+  LOCATION_TYPE: 'Location type',
+  COORDINATES: 'Coordinates',
+  LOCATION_NAME: 'Location name',
+  LATITUDE: 'Latitude',
+  LONGITUDE: 'Longitude',
+  Type: 'Type',
+  PICK_FROM_LIST: 'Pick from list',
+  ENTER_KEY_VALUE: 'Enter key value',
+  EDIT_COMPONENT: 'Edit component',
+  ADD_COMPONENT: 'Add component',
+  KEY: 'Key',
+  VALUE: 'Value',
+  MODEL: 'Model',
+  DELETE_MODEL: {
+    title: 'Delete model',
+    description:
+      'Are you certain you want to delete this model. There is no turning back?',
+  },
+  CLEAR_MODEL: {
+    title: 'Do you really want to delete everything?',
+    description: 'Are you sure that you want to delete your model?',
+  },
+  INCONSISTENCIES: 'Edit inconsistencies',
   saveButton: {
     label: 'Save',
     tooltip: 'Save unsaved changes',
@@ -39,16 +77,54 @@ export const messages = {
   },
 };
 
-export const messagesNL = {
+export const messagesNL: typeof messages = {
   home: 'home',
   home_route: '/home',
   about: 'over',
   about_route: '/over',
+  settings: 'instellingen',
+  settings_route: '/instellingen',
   DEFINE_BOX: 'Maak',
   define_box_route: '/maak',
   DOWNLOAD: 'Downloaden',
   UPLOAD: 'Uploaden',
   CLEAR: 'Wis',
+  CANCEL: 'Afbreken',
+  DELETE: 'Verwijderen',
+  YES: 'Ja',
+  NO: 'Nee',
+  OK: 'Ok',
+  NAME: 'Naam',
+  DESCRIPTION: 'Omschrijving',
+  CATEGORIES: 'Categoriën',
+  DIMENSIONS: 'Dimensies',
+  CONTEXT: 'Context',
+  NONE: 'Geen',
+  LOCATION: 'Locatie',
+  LOCATION_TYPE: 'Locatietype',
+  COORDINATES: 'Coordinaten',
+  LOCATION_NAME: 'Locatienaam',
+  LATITUDE: 'Latitude',
+  LONGITUDE: 'Longitude',
+  Type: 'Type',
+  PICK_FROM_LIST: 'Kies uit de lijst',
+  ENTER_KEY_VALUE: 'Vul een sleutel en waarde in',
+  EDIT_COMPONENT: 'Bewerk optie',
+  ADD_COMPONENT: 'Nieuwe optie',
+  KEY: 'Sleutel',
+  VALUE: 'Waarde',
+  MODEL: 'Model',
+  DELETE_MODEL: {
+    title: 'Verwijder model',
+    description:
+      'Weet u zeker dat u dit model wilt verwijderen? Dit kan niet ongedaan gemaakt worden.',
+  },
+  CLEAR_MODEL: {
+    title: 'Alles wissen',
+    description:
+      'Weet u zeker dat u dit model wilt wissen, en met een standaard model wilt beginnen? Er is geen weg terug.',
+  },
+  INCONSISTENCIES: 'Bewerk inconsistencies',
   saveButton: {
     label: 'Opslaan',
     tooltip: 'Sla aanpassingen op',
@@ -73,7 +149,7 @@ export const messagesNL = {
     /** Save button text */
     save: 'Opslaan',
   },
-} as typeof messages;
+};
 
 const setGuiLanguage = (language: Languages) => {
   const options = {
@@ -122,6 +198,7 @@ export const i18n = {
   init,
   addOnChangeListener,
   loadAndSetLocale,
+  i18n: {} as I18n,
   // } as {
   //   defaultLocale: Languages;
   //   currentLocale: Languages;
@@ -154,6 +231,17 @@ async function loadAndSetLocale(newLocale: Languages) {
   const resolvedLocale = supported(newLocale) ? newLocale : i18n.defaultLocale;
   i18n.currentLocale = resolvedLocale;
   t = setGuiLanguage(newLocale);
+  i18n.i18n = {
+    editRepeat: t('i18n', 'editRepeat'),
+    createRepeat: t('i18n', 'createRepeat'),
+    deleteItem: t('i18n', 'deleteItem'),
+    agree: t('i18n', 'agree'),
+    disagree: t('i18n', 'disagree'),
+    pickOne: t('i18n', 'pickOne'),
+    pickOneOrMore: t('i18n', 'pickOneOrMore'),
+    cancel: t('i18n', 'cancel'),
+    save: t('i18n', 'save'),
+  } as I18n;
   onChangeLocale.forEach((listener) => listener(i18n.currentLocale, dir()));
 }
 

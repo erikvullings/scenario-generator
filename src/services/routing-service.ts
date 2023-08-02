@@ -1,7 +1,12 @@
 import m, { RouteDefs } from 'mithril';
 import { Dashboards, IDashboard } from '../models';
 import { Layout } from '../components/layout';
-import { AboutPage, CreateBoxPage, HomePage } from '../components';
+import {
+  AboutPage,
+  CreateBoxPage,
+  HomePage,
+  SettingsPage,
+} from '../components';
 import { cells } from './state-mgmt';
 import { t } from './translations';
 
@@ -36,15 +41,15 @@ class RoutingService {
         visible: true,
         component: AboutPage,
       },
-      // {
-      //   id: Dashboards.SETTINGS,
-      //   title: t('settings'),
-      //   icon: 'settings',
-      //   iconClass: 'blue-text',
-      //   route: t('settings_route'),
-      //   visible: true,
-      //   component: SettingsPage,
-      // },
+      {
+        id: Dashboards.SETTINGS,
+        title: t('settings'),
+        icon: 'settings',
+        iconClass: 'blue-text',
+        route: t('settings_route'),
+        visible: true,
+        component: SettingsPage,
+      },
     ];
     // console.log(JSON.stringify(routes, null, 2));
     this.setList(routes);

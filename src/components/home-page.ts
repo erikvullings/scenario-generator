@@ -44,7 +44,7 @@ export const HomePage: MeiosisComponent = () => {
       const { model, language } = attrs.state;
 
       return [
-        m('div', { style: 'position: relative;' }, [
+        m('div', { style: 'padding-top: 1rem;position: relative;' }, [
           m('img.responsive-img.center', { src: background }),
           m('.buttons.center', { style: 'margin: 10px auto;' }, [
             [
@@ -231,18 +231,18 @@ export const HomePage: MeiosisComponent = () => {
           ),
           m(ModalPanel, {
             id: 'clearAll',
-            title: 'Do you really want to delete everything?',
-            description: 'Are you sure that you want to delete your model?',
+            title: t('CLEAR_MODEL', 'title'),
+            description: t('CLEAR_MODEL', 'description'),
             buttons: [
               {
-                label: 'Yes',
+                label: t('YES'),
                 iconName: 'delete',
                 onclick: () => {
                   saveModel(attrs, defaultModel);
                   routingSvc.switchTo(Dashboards.HOME);
                 },
               },
-              { label: 'No', iconName: 'cancel' },
+              { label: t('NO'), iconName: 'cancel' },
             ],
           }),
         ]),
