@@ -18,6 +18,30 @@ export type Item = {
   desc: string;
 };
 
+export type ContextType = 'none' | 'location' | 'locationType';
+export type LocationType = 'name' | 'coords';
+export type LocationTypeType = 'list' | 'keyValue';
+
+export type ContextualItem = Item & {
+  context: ContextType;
+  /** Location name, e.g. the name of a city or landmark */
+  location?: string;
+  /** Type of location when the context is location, e.g. name or coordinates */
+  locationType?: LocationType;
+  /** Type of location when the context is locationType, e.g. pick from a default list or OSM key value */
+  locationTypeType?: LocationType;
+  /** Location's latitude, WGS84 */
+  lat?: number;
+  /** Location's longitude, WGS84 */
+  lon?: number;
+  /** OSM type */
+  osmTypeId?: string;
+  /** OSM attribute key */
+  key?: string;
+  /** OSM attribute value */
+  value?: string;
+};
+
 export type Narrative = Item & {
   /** componentID => a component's valueId */
   components: { [key: string]: string };
@@ -37,7 +61,7 @@ export type Category = Item & {
 };
 
 export type ScenarioComponent = Item & {
-  values: Item[];
+  values: ContextualItem[];
 };
 
 export const defaultModel = {

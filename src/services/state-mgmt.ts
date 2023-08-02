@@ -1,19 +1,25 @@
 import m, { FactoryComponent } from 'mithril';
 import { meiosisSetup } from 'meiosis-setup';
-import { routingSvc } from '.';
-import { Dashboards, DataModel, defaultModel } from '../models';
+import { i18n, routingSvc } from '.';
+import {
+  ContextualItem,
+  Dashboards,
+  DataModel,
+  ID,
+  defaultModel,
+} from '../models';
 import { ldb } from '../utils/local-ldb';
 import { MeiosisCell, Update } from 'meiosis-setup/types';
 
 const MODEL_KEY = 'SG_MODEL';
 const SCENARIO_TITLE = 'SG_JOURNAL_TITLE';
 
-export interface State {
+export type State = {
   page: Dashboards;
   model: DataModel;
   title: string;
   language: string;
-}
+};
 
 export type MeiosisComponent<T = {}> = FactoryComponent<MeiosisCell<State> & T>;
 
@@ -36,23 +42,50 @@ export const changePage = (
   cell.update({ page });
 };
 
-export const saveModel = (cell: MeiosisCell<State>, model: DataModel) => {
+export const saveModel = async (cell: MeiosisCell<State>, model: DataModel) => {
   model.lastUpdate = Date.now();
   model.version = model.version ? ++model.version : 1;
-  ldb.set(MODEL_KEY, JSON.stringify(model));
+  await ldb.set(MODEL_KEY, JSON.stringify(model));
   // console.log(JSON.stringify(model, null, 2));
   cell.update({ model: () => model });
 };
 
-export const setLanguage = async (
+export const mutateScenarioComponent = async (
   cell: MeiosisCell<State>,
-  language: string
+  scenarioComponentId: ID,
+  item: ContextualItem,
+  mutation: 'update' | 'create' | 'delete'
 ) => {
-  localStorage.setItem('SG_LANGUAGE', language);
-  // await i18n.loadAndSetLocale(locale);
-  cell.update({ language });
+  const { model } = cell.state;
+  const {
+    scenario: { components },
+  } = model;
+  console.log('mutation');
+  const comp = components.filter((c) => c.id === scenarioComponentId).shift();
+  if (!comp) {
+    console.error('Scenario component not found!');
+    return;
+  }
+  const { values } = comp;
+  comp.values =
+    mutation === 'update'
+      ? values.map((c) => (c.id === item.id ? item : c))
+      : mutation === 'delete'
+      ? values.filter((c) => c.id !== item.id)
+      : [...values, item];
+  await saveModel(cell, model);
+  // cell.update({
+  //   model: (m) => {
+  //     m.scenario.components = components;
+  //     return m;
+  //   },
+  // });
 };
 
+export const setLanguage = async (locale = i18n.currentLocale) => {
+  localStorage.setItem('SG_LANGUAGE', locale);
+  await i18n.loadAndSetLocale(locale);
+};
 /* END OF Actions */
 
 const initialize = async (update: Update<State>) => {
@@ -73,6 +106,7 @@ const app = {
     title: '',
     page: Dashboards.HOME,
     model: defaultModel,
+    // t: setGuiLanguage('en'),
   } as State,
 };
 export const cells = meiosisSetup<State>({ app });

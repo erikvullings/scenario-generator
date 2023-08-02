@@ -691,3 +691,10 @@ a.waves-effect.waves-teal.btn-flat.selected {
 .no-gutter {
   margin: 0;
 }
+.top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.show-on-hover {
+}

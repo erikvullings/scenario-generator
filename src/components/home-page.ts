@@ -51,7 +51,7 @@ export const HomePage: MeiosisComponent = () => {
               m(
                 '.language-option',
                 {
-                  onclick: () => setLanguage(attrs, 'nl'),
+                  onclick: () => setLanguage('nl'),
                 },
                 [
                   m('img', {
@@ -67,7 +67,7 @@ export const HomePage: MeiosisComponent = () => {
               m(
                 '.language-option',
                 {
-                  onclick: () => setLanguage(attrs, 'en'),
+                  onclick: () => setLanguage('en'),
                 },
                 [
                   m('img', {
@@ -85,7 +85,7 @@ export const HomePage: MeiosisComponent = () => {
               iconName: 'clear',
               disabled: isCleared,
               className: 'btn-large',
-              label: 'Clear',
+              label: t('CLEAR'),
               modalId: 'clearAll',
             }),
             m('a#downloadAnchorElem', { style: 'display:none' }),

@@ -1,9 +1,9 @@
 import m, { RouteDefs } from 'mithril';
 import { Dashboards, IDashboard } from '../models';
 import { Layout } from '../components/layout';
-import { AboutPage, DefineBoxPage, HomePage } from '../components';
-import { t } from './translations';
+import { AboutPage, CreateBoxPage, HomePage } from '../components';
 import { cells } from './state-mgmt';
+import { t } from './translations';
 
 class RoutingService {
   private dashboards!: ReadonlyArray<IDashboard>;
@@ -26,7 +26,7 @@ class RoutingService {
         icon: 'grid_view',
         route: t('define_box_route'),
         visible: true,
-        component: DefineBoxPage,
+        component: CreateBoxPage,
       },
       {
         id: Dashboards.ABOUT,
