@@ -6,9 +6,19 @@ export type DataModel = {
 
 export type InconsistencyType = 'partly' | 'totally';
 
+/** Old inconsistency type */
 export type Inconsistency = {
   ids: [from: string, to: string];
   type: InconsistencyType;
+};
+
+/**
+ * New inconsistency type, where the key
+ * is a combination of the row ID and col ID,
+ * sorted alphabetically.
+ */
+export type Inconsistencies = {
+  [key: string]: boolean;
 };
 
 export type Item = {
@@ -50,7 +60,7 @@ export type Narrative = Item & {
 };
 
 export type Scenario = Item & {
-  inconsistencies: Inconsistency[];
+  inconsistencies: Inconsistencies;
   categories: Category[];
   components: ScenarioComponent[];
   // components: ScenarioComponent[];
@@ -71,7 +81,7 @@ export const defaultModel = {
     id: 'demo1',
     label: 'Demo',
     desc: 'Demo scenario',
-    inconsistencies: [] as Inconsistency[],
+    inconsistencies: {} as Inconsistencies,
     categories: [
       {
         id: 'threat',

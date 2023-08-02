@@ -41,6 +41,11 @@ export const messages = {
   KEY: 'Key',
   VALUE: 'Value',
   MODEL: 'Model',
+  COMBINATIONS: {
+    POSSIBLE: 'Combinations are possible',
+    IMPOSSIBLE: 'Combinations are impossible',
+    IMPROBABLE: 'Combinations are improbable',
+  },
   DELETE_MODEL: {
     title: 'Delete model',
     description:
@@ -50,7 +55,11 @@ export const messages = {
     title: 'Do you really want to delete everything?',
     description: 'Are you sure that you want to delete your model?',
   },
-  INCONSISTENCIES: 'Edit inconsistencies',
+  INCONSISTENCIES: {
+    title: 'Edit inconsistencies',
+    SELECT_ROW: 'Select row',
+    SELECT_COL: 'Select column',
+  },
   saveButton: {
     label: 'Save',
     tooltip: 'Save unsaved changes',
@@ -114,6 +123,11 @@ export const messagesNL: typeof messages = {
   KEY: 'Sleutel',
   VALUE: 'Waarde',
   MODEL: 'Model',
+  COMBINATIONS: {
+    POSSIBLE: 'Combinaties zijn mogelijk',
+    IMPOSSIBLE: 'Combinaties zijn onmogelijk',
+    IMPROBABLE: 'Combinaties zijn onwaarschijnlijk',
+  },
   DELETE_MODEL: {
     title: 'Verwijder model',
     description:
@@ -124,7 +138,11 @@ export const messagesNL: typeof messages = {
     description:
       'Weet u zeker dat u dit model wilt wissen, en met een standaard model wilt beginnen? Er is geen weg terug.',
   },
-  INCONSISTENCIES: 'Bewerk inconsistencies',
+  INCONSISTENCIES: {
+    title: 'Bewerk inconsistencies',
+    SELECT_ROW: 'Selecteer rij',
+    SELECT_COL: 'Selecteer kolom',
+  },
   saveButton: {
     label: 'Opslaan',
     tooltip: 'Sla aanpassingen op',

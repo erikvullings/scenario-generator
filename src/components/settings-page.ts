@@ -1,8 +1,60 @@
-import m from 'mithril';
-import { Dashboards, DataModel, Scenario } from '../models';
+import m, { FactoryComponent } from 'mithril';
+import {
+  Dashboards,
+  DataModel,
+  ID,
+  Inconsistencies,
+  Scenario,
+} from '../models';
 import { MeiosisComponent, saveModel, setPage, t } from '../services';
-import { FlatButton, ModalPanel, Tabs } from 'mithril-materialized';
+import {
+  FlatButton,
+  Icon,
+  ModalPanel,
+  Select,
+  Tabs,
+} from 'mithril-materialized';
 import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
+import { key } from '../utils';
+
+export const InconsistencyCheckbox: FactoryComponent<{
+  inconsistencies: Inconsistencies;
+  rowId: ID;
+  colId: ID;
+  callback: () => Promise<void>;
+}> = () => {
+  return {
+    view: ({ attrs: { rowId, colId, inconsistencies, callback } }) => {
+      const k = key(rowId, colId);
+      const v = inconsistencies[k];
+      const iconName =
+        typeof v === 'undefined'
+          ? 'check_circle_outline'
+          : v
+          ? 'radio_button_unchecked'
+          : 'blur_circular';
+      console.log(`${k} = ${v}`);
+      return m(Icon, {
+        className: 'clickable',
+        iconName,
+        onclick: async () => {
+          switch (v) {
+            case true:
+              inconsistencies[k] = false;
+              break;
+            case false:
+              delete inconsistencies[k];
+              break;
+            default:
+              inconsistencies[k] = true;
+              break;
+          }
+          await callback();
+        },
+      });
+    },
+  };
+};
 
 export const SettingsPage: MeiosisComponent = () => {
   const form = [
@@ -45,10 +97,19 @@ export const SettingsPage: MeiosisComponent = () => {
       label: t('CATEGORIES'),
     },
   ] as UIForm<Scenario>;
+  let rowId: ID;
+  let colId: ID;
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.SETTINGS),
     view: ({ attrs }) => {
       const { model } = attrs.state;
+      const { inconsistencies } = model.scenario;
+      const rowComp =
+        rowId &&
+        model.scenario.components.filter((c) => c.id === rowId).shift();
+      const colComp =
+        colId &&
+        model.scenario.components.filter((c) => c.id === colId).shift();
       return [
         m('.settings-page.row', [
           m(Tabs, {
@@ -71,7 +132,97 @@ export const SettingsPage: MeiosisComponent = () => {
                   } as FormAttributes<Scenario>),
                 ]),
               },
-              { title: t('INCONSISTENCIES') },
+              {
+                title: t('INCONSISTENCIES', 'title'),
+                vnode: m('.inconsistencies-settings.row', [
+                  m(Select, {
+                    checkedId: rowId,
+                    iconName: 'view_stream',
+                    className: 'col s6 m4',
+                    placeholder: t('i18n', 'pickOne'),
+                    label: t('INCONSISTENCIES', 'SELECT_ROW'),
+                    options: model.scenario.components,
+                    onchange: (ids) => (rowId = ids[0] as string),
+                  }),
+                  m(Select, {
+                    checkedId: colId,
+                    iconName: 'view_week',
+                    className: 'col s6 m4',
+                    placeholder: t('i18n', 'pickOne'),
+                    label: t('INCONSISTENCIES', 'SELECT_COL'),
+                    options: model.scenario.components,
+                    onchange: (ids) => (colId = ids[0] as string),
+                  }),
+                  m(
+                    '.col.s12.m4',
+                    m('.card', [
+                      m('ul', [
+                        m(
+                          'li',
+                          m(Icon, {
+                            style: 'vertical-align: bottom',
+                            iconName: 'check_circle_outline',
+                          }),
+                          t('COMBINATIONS', 'POSSIBLE')
+                        ),
+                        m(
+                          'li',
+                          m(Icon, {
+                            style: 'vertical-align: bottom',
+                            iconName: 'radio_button_unchecked',
+                          }),
+                          t('COMBINATIONS', 'IMPOSSIBLE')
+                        ),
+                        m(
+                          'li',
+                          m(Icon, {
+                            style: 'vertical-align: bottom',
+                            iconName: 'blur_circular',
+                          }),
+                          t('COMBINATIONS', 'IMPROBABLE')
+                        ),
+                      ]),
+                    ])
+                  ),
+                  rowComp &&
+                    colComp &&
+                    m(
+                      '.col.s12',
+                      m('.row', [
+                        m(
+                          '.col.s12',
+                          m('table.responsive-table.highlight', [
+                            m(
+                              'thead',
+                              m('tr', [
+                                m('th', `${rowComp.label} \\ ${colComp.label}`),
+                                ...colComp.values.map((v) => m('th', v.label)),
+                              ]),
+                              rowComp.values.map((r) =>
+                                m('tr', [
+                                  m('td', r.label),
+                                  ...colComp.values.map((c) =>
+                                    m(
+                                      'td',
+                                      m(InconsistencyCheckbox, {
+                                        rowId: r.id,
+                                        colId: c.id,
+                                        inconsistencies,
+                                        callback: async () =>
+                                          await saveModel(attrs, model),
+                                      })
+                                      // inconsistencies[key(r.id, c.id)] || 'NONE'
+                                    )
+                                  ),
+                                ])
+                              )
+                            ),
+                          ])
+                        ),
+                      ])
+                    ),
+                ]),
+              },
             ],
           }),
           m(ModalPanel, {
@@ -93,7 +244,7 @@ export const SettingsPage: MeiosisComponent = () => {
                       id: '',
                       label: '',
                       desc: '',
-                      inconsistencies: [],
+                      inconsistencies: {},
                       categories: [],
                       components: [],
                     } as Scenario,

@@ -699,3 +699,6 @@ a.waves-effect.waves-teal.btn-flat.selected {
 ul.kanban > li {
   margin-bottom: 10px;
 }
+.inconsistencies-settings {
+  height: 90vh;
+}

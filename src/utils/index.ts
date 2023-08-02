@@ -1,6 +1,7 @@
 import m from 'mithril';
 import { padLeft } from 'mithril-materialized';
 import { render } from 'mithril-ui-form';
+import { ID } from '../models';
 
 const supRegex = /\^([^_ ]+)(_|$|\s)/g;
 const subRegex = /\_([^\^ ]+)(\^|$|\s)/g;
@@ -132,3 +133,7 @@ export const generateNumbers = (
   const length = Math.floor((end - start) / step) + 1;
   return Array.from({ length }, (_, index) => start + index * step);
 };
+
+/** Create a unique key by combining two unique identifiers, sorted alphabetically. */
+export const key = (rowId: ID, colId: ID) =>
+  rowId < colId ? `${rowId}_${colId}` : `${colId}_${rowId}`;

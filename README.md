@@ -11,7 +11,7 @@ Generate a threat scenario from a self-defined morphological box.
 - [DONE] Translations
 - Kanban drag-n-drop functionality
 - Kanban direction functionality
-- Implement page for inconsistency settings
+- [DONE] Implement page for inconsistency settings
 - Implement page for scenario generation
 - Implement page for showing scenarios
 - Save data model
