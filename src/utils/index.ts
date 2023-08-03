@@ -133,7 +133,3 @@ export const generateNumbers = (
   const length = Math.floor((end - start) / step) + 1;
   return Array.from({ length }, (_, index) => start + index * step);
 };
-
-/** Create a unique key by combining two unique identifiers, sorted alphabetically. */
-export const key = (rowId: ID, colId: ID) =>
-  rowId < colId ? `${rowId}_${colId}` : `${colId}_${rowId}`;

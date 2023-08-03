@@ -44,7 +44,6 @@ export const changePage = (
 
 export const saveModel = async (cell: MeiosisCell<State>, model: DataModel) => {
   model.lastUpdate = Date.now();
-  model.version = model.version ? ++model.version : 1;
   await ldb.set(MODEL_KEY, JSON.stringify(model));
   // console.log(JSON.stringify(model, null, 2));
   cell.update({ model: () => model });
@@ -60,7 +59,6 @@ export const mutateScenarioComponent = async (
   const {
     scenario: { components },
   } = model;
-  console.log('mutation');
   const comp = components.filter((c) => c.id === scenarioComponentId).shift();
   if (!comp) {
     console.error('Scenario component not found!');
@@ -74,12 +72,6 @@ export const mutateScenarioComponent = async (
       ? values.filter((c) => c.id !== item.id)
       : [...values, item];
   await saveModel(cell, model);
-  // cell.update({
-  //   model: (m) => {
-  //     m.scenario.components = components;
-  //     return m;
-  //   },
-  // });
 };
 
 export const setLanguage = async (locale = i18n.currentLocale) => {

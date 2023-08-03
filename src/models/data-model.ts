@@ -4,6 +4,32 @@ export type DataModel = {
   scenario: Scenario;
 };
 
+export type OldDataModel = {
+  scenarios: {
+    current: {
+      id: string;
+      type: string;
+      category: string;
+      name: string;
+      desc: string;
+      categories: {
+        [key: string]: string[];
+      };
+      inconsistencies: Inconsistency[];
+      narratives: Narrative[];
+    };
+  };
+} & {
+  [key: string]: {
+    list: Array<{
+      id: string;
+      name: string;
+      type: string;
+      desc?: string;
+    }>;
+  };
+};
+
 export type InconsistencyType = 'partly' | 'totally';
 
 /** Old inconsistency type */
@@ -13,12 +39,12 @@ export type Inconsistency = {
 };
 
 /**
- * New inconsistency type, where the key
- * is a combination of the row ID and col ID,
- * sorted alphabetically.
+ * New inconsistency type, where a missing value indicates a combination that
+ * is possible, a value of true indicates the combination is not possible, and
+ * false indicates it is improbable.
  */
 export type Inconsistencies = {
-  [key: string]: boolean;
+  [rowOrColId: string]: { [rowOrColId: string]: boolean };
 };
 
 export type Item = {

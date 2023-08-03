@@ -12,7 +12,13 @@ import {
   setPage,
   t,
 } from '../services';
-import { Dashboards, DataModel, defaultModel } from '../models';
+import {
+  Dashboards,
+  DataModel,
+  OldDataModel,
+  Scenario,
+  defaultModel,
+} from '../models';
 import { formatDate } from '../utils';
 // import { padLeft } from '';
 
@@ -101,7 +107,7 @@ export const HomePage: MeiosisComponent = () => {
                   return;
                 }
                 const version =
-                  typeof model.version === 'undefined' ? 1 : model.version++;
+                  typeof model.version === 'undefined' ? 1 : ++model.version;
                 const dataStr =
                   'data:text/json;charset=utf-8,' +
                   encodeURIComponent(
@@ -147,8 +153,15 @@ export const HomePage: MeiosisComponent = () => {
                         const result = (e &&
                           e.target &&
                           e.target.result) as string;
-                        const json = JSON.parse(result.toString()) as DataModel;
-                        json && json.version && saveModel(attrs, json);
+                        const json = JSON.parse(result.toString()) as
+                          | {
+                              version?: number;
+                              scenario?: Scenario;
+                            }
+                          | OldDataModel;
+                        json &&
+                          json.version &&
+                          saveModel(attrs, json as DataModel);
                         changePage(attrs, Dashboards.HOME);
                       }
                     };

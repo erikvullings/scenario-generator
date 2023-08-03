@@ -15,7 +15,6 @@ import {
   Tabs,
 } from 'mithril-materialized';
 import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
-import { key } from '../utils';
 
 export const InconsistencyCheckbox: FactoryComponent<{
   inconsistencies: Inconsistencies;
@@ -25,28 +24,34 @@ export const InconsistencyCheckbox: FactoryComponent<{
 }> = () => {
   return {
     view: ({ attrs: { rowId, colId, inconsistencies, callback } }) => {
-      const k = key(rowId, colId);
-      const v = inconsistencies[k];
+      const row = inconsistencies[rowId];
+      const v = typeof row !== 'undefined' ? row[colId] : undefined;
       const iconName =
         typeof v === 'undefined'
           ? 'check_circle_outline'
           : v
           ? 'radio_button_unchecked'
           : 'blur_circular';
-      console.log(`${k} = ${v}`);
       return m(Icon, {
         className: 'clickable',
         iconName,
         onclick: async () => {
           switch (v) {
             case true:
-              inconsistencies[k] = false;
+              inconsistencies[rowId][colId] = inconsistencies[colId][rowId] =
+                false;
               break;
             case false:
-              delete inconsistencies[k];
+              delete inconsistencies[rowId][colId];
+              delete inconsistencies[colId][rowId];
               break;
             default:
-              inconsistencies[k] = true;
+              if (!inconsistencies[rowId]) {
+                inconsistencies[rowId] = {};
+                inconsistencies[colId] = {};
+              }
+              inconsistencies[rowId][colId] = inconsistencies[colId][rowId] =
+                true;
               break;
           }
           await callback();
