@@ -30,21 +30,13 @@ export const Layout: MeiosisComponent = () => ({
               'a.brand-logo[href=#].show-on-large',
               { style: 'margin-left: 20px' },
               [
-                m(`img[width=140][height=60][src=${logo}]`, {
+                m(`img[width=140][height=60][src=${logo}][alt=TNO]`, {
                   style: 'margin-top: 5px; margin-left: -5px;',
                 }),
-                // m(
-                //   'div',
-                //   {
-                //     style:
-                //       'margin-top: 0px; position: absolute; top: 10px; left: 60px; width: 350px;',
-                //   },
-                //   m(
-                //     'h4.center.show-on-med-and-up.black-text',
-                //     { style: 'text-align: left; margin: 0;' },
-                //     'Zicht op overgewicht'
-                //   )
-                // ),
+                m(
+                  '.title.show-on-med-and-up.black-text',
+                  attrs.state.model?.scenario?.label
+                ),
               ]
             ),
             m(
