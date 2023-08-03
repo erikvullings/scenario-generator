@@ -5,14 +5,12 @@ import { plural_EN } from 'translate.js/pluralize';
 export type Languages = 'nl' | 'en';
 
 export const messages = {
-  home: 'home',
-  home_route: '/home',
-  about: 'about',
-  about_route: '/about',
-  settings: 'settings',
-  settings_route: '/settings',
-  DEFINE_BOX: 'Create',
-  define_box_route: '/create',
+  HOME: { TITLE: 'home', ROUTE: '/home' },
+  ABOUT: { TITLE: 'about', ROUTE: '/about' },
+  DEFINE_BOX: { TITLE: 'Define', ROUTE: '/define' },
+  SETTINGS: { TITLE: 'Settings', ROUTE: '/settings' },
+  GENERATE_SCENARIO: { TITLE: 'Generate', ROUTE: '/generate' },
+  SHOW_SCENARIO: { TITLE: 'Show', ROUTE: '/home' },
   DOWNLOAD: 'Download',
   UPLOAD: 'Upload',
   CLEAR: 'Clear',
@@ -87,14 +85,12 @@ export const messages = {
 };
 
 export const messagesNL: typeof messages = {
-  home: 'home',
-  home_route: '/home',
-  about: 'over',
-  about_route: '/over',
-  settings: 'instellingen',
-  settings_route: '/instellingen',
-  DEFINE_BOX: 'Maak',
-  define_box_route: '/maak',
+  HOME: { TITLE: 'home', ROUTE: '/home' },
+  ABOUT: { TITLE: 'over', ROUTE: '/over' },
+  DEFINE_BOX: { TITLE: 'Definieer', ROUTE: '/definieer' },
+  SETTINGS: { TITLE: 'Instellingen', ROUTE: '/instellingen' },
+  GENERATE_SCENARIO: { TITLE: 'Genereer', ROUTE: '/genereer' },
+  SHOW_SCENARIO: { TITLE: 'Toon', ROUTE: '/toon' },
   DOWNLOAD: 'Downloaden',
   UPLOAD: 'Uploaden',
   CLEAR: 'Wis',
