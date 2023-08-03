@@ -4,7 +4,7 @@ import { Layout } from '../components/layout';
 import {
   AboutPage,
   CreateBoxPage,
-  GenerateScenarioPage,
+  CreateScenarioPage,
   HomePage,
   SettingsPage,
   ShowScenarioPage,
@@ -36,12 +36,12 @@ class RoutingService {
         component: CreateBoxPage,
       },
       {
-        id: Dashboards.GENERATE_SCENARIO,
+        id: Dashboards.CREATE_SCENARIO,
         icon: 'edit',
-        title: t('GENERATE_SCENARIO', 'TITLE'),
-        route: t('GENERATE_SCENARIO', 'ROUTE'),
+        title: t('CREATE_SCENARIO', 'TITLE'),
+        route: t('CREATE_SCENARIO', 'ROUTE'),
         visible: true,
-        component: GenerateScenarioPage,
+        component: CreateScenarioPage,
       },
       {
         id: Dashboards.SHOW_SCENARIO,

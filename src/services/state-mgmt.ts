@@ -6,6 +6,7 @@ import {
   Dashboards,
   DataModel,
   ID,
+  Narrative,
   defaultModel,
 } from '../models';
 import { ldb } from '../utils/local-ldb';
@@ -19,6 +20,12 @@ export type State = {
   model: DataModel;
   title: string;
   language: string;
+  /** Current narrative that we are working on */
+  curNarrative?: Narrative;
+  /** Components that have been excluded from the narrative */
+  excludedComps?: Record<ID, boolean>;
+  /** Components that have been given a fixed value in the narrative */
+  lockedComps?: Record<ID, boolean>;
 };
 
 export type MeiosisComponent<T = {}> = FactoryComponent<MeiosisCell<State> & T>;
