@@ -48,6 +48,8 @@ export const InconsistencyCheckbox: FactoryComponent<{
             default:
               if (!inconsistencies[rowId]) {
                 inconsistencies[rowId] = {};
+              }
+              if (!inconsistencies[colId]) {
                 inconsistencies[colId] = {};
               }
               inconsistencies[rowId][colId] = inconsistencies[colId][rowId] =
