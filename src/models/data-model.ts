@@ -80,7 +80,7 @@ export type ContextualItem = Item & {
 
 export type Narrative = Item & {
   /** componentID => a component's valueId */
-  components: { [key: string]: string };
+  components: { [key: ID]: ID };
   /** Is the narrative included in the final set of narratives or a temporary scenario, just in case */
   included: boolean;
 };

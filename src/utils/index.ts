@@ -133,3 +133,12 @@ export const generateNumbers = (
   const length = Math.floor((end - start) / step) + 1;
   return Array.from({ length }, (_, index) => start + index * step);
 };
+
+export const getRandomValue = <T>(array: T[]): T | undefined => {
+  if (array.length === 0) {
+    return undefined;
+  }
+
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+};

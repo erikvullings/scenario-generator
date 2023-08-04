@@ -708,6 +708,10 @@ ul.kanban > li {
 .inconsistencies-settings {
   height: 90vh;
 }
+.create-scenario {
+  margin-top: 1rem;
+  height: 95vh;
+}
 .scenario-table .input-field {
   margin-bottom: 0;
 }
