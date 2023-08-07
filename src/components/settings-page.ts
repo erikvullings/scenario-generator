@@ -234,8 +234,8 @@ export const SettingsPage: MeiosisComponent = () => {
           }),
           m(ModalPanel, {
             id: 'deleteModel',
-            title: t('DELETE_MODEL', 'title'),
-            description: t('DELETE_MODEL', 'description'),
+            title: t('DELETE_ITEM', 'title', { item: t('MODEL') }),
+            description: t('DELETE_ITEM', 'description', { item: t('MODEL') }),
             // options: { opacity: 0.7 },
             buttons: [
               {
@@ -254,6 +254,7 @@ export const SettingsPage: MeiosisComponent = () => {
                       inconsistencies: {},
                       categories: [],
                       components: [],
+                      narratives: [],
                     } as Scenario,
                   } as DataModel;
                   saveModel(attrs, newModel);

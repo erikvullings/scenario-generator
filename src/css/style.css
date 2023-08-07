@@ -694,6 +694,12 @@ a.waves-effect.waves-teal.btn-flat.selected {
 .mt10 {
   margin-top: 10px;
 }
+.mt25 {
+  margin-top: 25px;
+}
+.mb0 {
+  margin-bottom: 0;
+}
 .no-gutter {
   margin: 0;
 }
@@ -710,7 +716,13 @@ ul.kanban > li {
 }
 .create-scenario {
   margin-top: 1rem;
-  height: 95vh;
+  height: 85vh;
+}
+.create-scenario .row {
+  margin-bottom: 0;
+}
+#editor {
+  min-height: 150px;
 }
 .scenario-table .input-field {
   margin-bottom: 0;

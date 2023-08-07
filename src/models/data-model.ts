@@ -80,15 +80,18 @@ export type ContextualItem = Item & {
 
 export type Narrative = Item & {
   /** componentID => a component's valueId */
-  components: { [key: ID]: ID };
+  components: { [key: ID]: ID[] };
   /** Is the narrative included in the final set of narratives or a temporary scenario, just in case */
   included: boolean;
+  /** Is the narrative saved in the set of narratives (so we should be able to delete or replace it) */
+  saved: boolean;
 };
 
 export type Scenario = Item & {
   inconsistencies: Inconsistencies;
   categories: Category[];
   components: ScenarioComponent[];
+  narratives: Narrative[];
   // components: ScenarioComponent[];
 };
 

@@ -1,4 +1,16 @@
 import m, { FactoryComponent } from 'mithril';
+import Quill, { DeltaOperation } from 'quill';
+import {
+  Button,
+  FlatButton,
+  ISelectOptions,
+  Icon,
+  InputCheckbox,
+  ModalPanel,
+  Select,
+  TextInput,
+  uniqueId,
+} from 'mithril-materialized';
 import {
   Category,
   Dashboards,
@@ -7,16 +19,8 @@ import {
   Scenario,
   ScenarioComponent,
 } from '../models';
-import { MeiosisComponent, setPage, t } from '../services';
-import {
-  Button,
-  FlatButton,
-  ISelectOptions,
-  Icon,
-  Select,
-  uniqueId,
-} from 'mithril-materialized';
-import { getRandomValue } from '../utils';
+import { MeiosisComponent, saveModel, setPage, t } from '../services';
+import { deepCopy, getRandomValue } from '../utils';
 
 const ToggleIcon: FactoryComponent<{
   on: string;
@@ -62,7 +66,6 @@ export const CategoryTable: MeiosisComponent<{
     view: ({ attrs }) => {
       const {
         state: {
-          model,
           excludedComps = {},
           lockedComps = {},
           curNarrative = {} as Narrative,
@@ -111,6 +114,7 @@ export const CategoryTable: MeiosisComponent<{
                 key: `key${excludedComps[c.id]}`,
                 placeholder: ' ',
                 className: 'col s10',
+                multiple: true,
                 disabled:
                   typeof excludedComps[c.id] !== 'undefined' &&
                   excludedComps[c.id],
@@ -120,7 +124,7 @@ export const CategoryTable: MeiosisComponent<{
                   if (!curNarrative.components) {
                     curNarrative.components = {};
                   }
-                  curNarrative.components[c.id] = ids[0];
+                  curNarrative.components[c.id] = ids;
                   attrs.update({ curNarrative });
                 },
               } as ISelectOptions<string>),
@@ -162,7 +166,7 @@ export const CategoryTable: MeiosisComponent<{
 
 const generateNarrative = (
   scenario: Scenario,
-  locked: Record<ID, ID> = {}
+  locked: Record<ID, ID[]> = {}
   // excludedComps: Record<ID, boolean> = {}
 ) => {
   const { categories, components, inconsistencies } = scenario;
@@ -170,7 +174,7 @@ const generateNarrative = (
   // const chosen = { ...locked } as Record<ID, ID>;
   let tries = 0;
   const generate = () => {
-    const chosen = { ...locked } as Record<ID, ID>;
+    const chosen = { ...locked } as Record<ID, ID[]>;
     for (const category of categories) {
       const catComps = components
         .filter((c) => category.componentIds.includes(c.id))
@@ -190,8 +194,11 @@ const generateNarrative = (
       for (const catComp of catComps) {
         if (chosen.hasOwnProperty(catComp.id)) {
           const chosenValue = chosen[catComp.id];
-          if (inconsistencies.hasOwnProperty(chosenValue)) {
-            Object.keys(inconsistencies[chosenValue]).forEach((id) =>
+          if (
+            chosenValue.length &&
+            inconsistencies.hasOwnProperty(chosenValue[0])
+          ) {
+            Object.keys(inconsistencies[chosenValue[0]]).forEach((id) =>
               excluded.push(id)
             );
           }
@@ -203,7 +210,7 @@ const generateNarrative = (
         if (valuesToChooseFrom.length === 0) return false;
         const value = getRandomValue(valuesToChooseFrom);
         if (value) {
-          chosen[catComp.id] = value;
+          chosen[catComp.id] = [value];
         } else {
           return false;
         }
@@ -228,6 +235,8 @@ const generateNarrative = (
 };
 
 export const CreateScenarioPage: MeiosisComponent = () => {
+  let editor: Quill;
+
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.CREATE_SCENARIO),
     view: ({ attrs }) => {
@@ -237,8 +246,9 @@ export const CreateScenarioPage: MeiosisComponent = () => {
       const { categories = [] } = model.scenario;
       return m('.create-scenario.row', [
         m('.col.s12', [
-          m(Button, {
+          m(FlatButton, {
             label: t('GENERATE_NARRATIVE'),
+            iconName: 'refresh',
             onclick: () => {
               const { components } = curNarrative;
               const locked = components
@@ -247,8 +257,8 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                       acc[cur] = components[cur];
                     }
                     return acc;
-                  }, {} as Record<ID, ID>)
-                : ({} as Record<ID, ID>);
+                  }, {} as Record<ID, ID[]>)
+                : ({} as Record<ID, ID[]>);
               const narrative = generateNarrative(model.scenario, locked);
               if (!narrative) {
                 alert('Narrative not generated in 100 tries');
@@ -257,21 +267,105 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               }
             },
           }),
-          m(Button, {
+          m(FlatButton, {
             label: t('CLEAR_NARRATIVE'),
+            iconName: 'clear',
             style: 'margin-left: 10px;',
             onclick: () => {
+              editor.setContents([] as any);
               attrs.update({
-                curNarrative: (n) => {
-                  if (n) {
-                    n.components = {};
-                    return n;
-                  }
-                  return { included: false, components: {} } as Narrative;
-                },
+                curNarrative: () =>
+                  ({ included: false, components: {} } as Narrative),
               });
             },
           }),
+          m(FlatButton, {
+            label: t('SAVE_NARRATIVE'),
+            iconName: 'save',
+            disabled:
+              !curNarrative.label ||
+              !curNarrative.components ||
+              Object.keys(curNarrative.components).length === 0,
+            onclick: () => {
+              if (!model.scenario.narratives) {
+                curNarrative.saved = true;
+                model.scenario.narratives = [curNarrative];
+              } else {
+                if (curNarrative.saved) {
+                  model.scenario.narratives = model.scenario.narratives.map(
+                    (n) => (n.id !== curNarrative.id ? n : curNarrative)
+                  );
+                } else {
+                  curNarrative.saved = true;
+                  model.scenario.narratives.push(curNarrative);
+                }
+              }
+              saveModel(attrs, model);
+            },
+          }),
+          curNarrative.saved && [
+            m(FlatButton, {
+              label: t('DELETE'),
+              iconName: 'delete',
+              modalId: 'deleteSavedNarrative',
+            }),
+            m(ModalPanel, {
+              id: 'deleteSavedNarrative',
+              title: t('DELETE_ITEM', 'title', { item: t('NARRATIVE') }),
+              description: t('DELETE_ITEM', 'description', {
+                item: t('NARRATIVE'),
+              }),
+              buttons: [
+                {
+                  label: t('CANCEL'),
+                },
+                {
+                  label: t('OK'),
+                  onclick: () => {
+                    model.scenario.narratives =
+                      model.scenario.narratives.filter(
+                        (n) => n.id !== curNarrative.id
+                      );
+                    attrs.update({
+                      curNarrative: () =>
+                        ({ included: false, components: {} } as Narrative),
+                    });
+                    saveModel(attrs, model);
+                  },
+                },
+              ],
+            }),
+          ],
+          model.scenario &&
+            model.scenario.narratives &&
+            model.scenario.narratives.length > 0 &&
+            m(Select, {
+              className: 'right mb0',
+              label: t('SELECT_NARRATIVE'),
+              checkedId: curNarrative.saved ? curNarrative.id : undefined,
+              placeholder: t('i18n', 'pickOne'),
+              options: model.scenario.narratives,
+              onchange: (v) => {
+                if (v && v.length > 0) {
+                  const newNarrative = model.scenario.narratives
+                    .filter((n) => n.id === v[0])
+                    .shift();
+                  if (newNarrative) {
+                    editor.setContents(
+                      newNarrative.desc ? JSON.parse(newNarrative.desc) : []
+                    );
+                  }
+                  attrs.update({
+                    curNarrative: () => deepCopy(newNarrative),
+                    lockedComps: () =>
+                      model.scenario.components.reduce((acc, cur) => {
+                        acc[cur.id] = true;
+                        return acc;
+                      }, {} as Record<ID, boolean>),
+                  });
+                }
+              },
+            } as ISelectOptions<string>),
         ]),
         categories.map((c) =>
           m(
@@ -282,6 +376,56 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               catId: c.id,
             })
           )
+        ),
+        m(
+          '.col.s12',
+          {
+            oncreate: () => {
+              editor = new Quill('#editor', {
+                debug: 'info',
+                modules: {
+                  toolbar: [
+                    [{ header: [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                  ],
+                },
+                placeholder: t('EDITOR_PLACEHOLDER'),
+                readOnly: false,
+                theme: 'snow',
+              });
+              editor.on('text-change', () => {
+                curNarrative.desc = JSON.stringify(editor.getContents());
+                attrs.update({ curNarrative });
+              });
+            },
+          },
+          [
+            m('.row', [
+              m(TextInput, {
+                className: 'col s4',
+                initialValue: curNarrative.label,
+                label: t('NAME_NARRATIVE'),
+                required: true,
+                onchange: (n) => {
+                  curNarrative.label = n;
+                  attrs.update({ curNarrative });
+                },
+              }),
+              m(InputCheckbox, {
+                className: 'col s4 mt25',
+                initialValue: curNarrative.included,
+                label: t('INCLUDE_NARRATIVE'),
+                onchange: (n) => {
+                  curNarrative.included = n;
+                  attrs.update({ curNarrative });
+                },
+              }),
+              m('.col.s4', []),
+            ]),
+            m('#toolbar'),
+            m('#editor', {}),
+          ]
         ),
       ]);
     },

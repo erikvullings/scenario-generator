@@ -2,6 +2,7 @@ import m from 'mithril';
 import 'material-icons/iconfont/material-icons.css';
 import 'materialize-css/dist/css/materialize.min.css';
 import './css/style.css';
+import 'quill/dist/quill.snow.css';
 import { routingSvc } from './services/routing-service';
 import { Languages, i18n } from './services';
 
