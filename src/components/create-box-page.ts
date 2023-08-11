@@ -5,6 +5,8 @@ import {
   ScenarioComponent,
   OsmTypes,
   ID,
+  ContextType,
+  contextTypeOptions,
 } from '../models';
 import {
   MeiosisComponent,
@@ -19,12 +21,35 @@ import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
 const BoxItem: MeiosisComponent<{
   id: ID;
   item: ContextualItem;
+  contexts?: ContextType[];
   form: UIForm<ContextualItem>;
 }> = () => {
   let obj: ContextualItem;
+  let contextAwareForm: UIForm<ContextualItem>;
 
   return {
-    oninit: ({ attrs: { item } }) => (obj = { ...item }),
+    oninit: ({ attrs: { item, form, contexts } }) => {
+      const hasContext =
+        contexts && contexts.length > 0 && contexts[0] !== 'none';
+      contextAwareForm = form
+        .filter((i) => (i.id === 'context' ? hasContext : true))
+        .map((i) =>
+          i.id === 'context' &&
+          hasContext &&
+          i.options &&
+          i.options instanceof Array
+            ? {
+                ...i,
+                options: i.options.filter(
+                  (o) =>
+                    o.id === 'none' ||
+                    contexts.indexOf(o.id as ContextType) >= 0
+                ),
+              }
+            : i
+        );
+      obj = { ...item };
+    },
     view: ({ attrs }) => {
       const { item, id, form } = attrs;
       return [
@@ -44,7 +69,7 @@ const BoxItem: MeiosisComponent<{
           title: t('EDIT_COMPONENT'),
           fixedFooter: true,
           description: m(LayoutForm, {
-            form,
+            form: contextAwareForm,
             obj,
             i18n: i18n.i18n,
           } as FormAttributes<ContextualItem>),
@@ -134,7 +159,13 @@ const BoxRow: MeiosisComponent<{
           'ul.kanban-row',
           m(BoxHeader, { ...attrs, sc, form }),
           sc.values.map((c) =>
-            m(BoxItem, { ...attrs, id: sc.id, item: c, form })
+            m(BoxItem, {
+              ...attrs,
+              id: sc.id,
+              contexts: sc.contexts,
+              item: c,
+              form,
+            })
           )
         ),
       ]);
@@ -181,11 +212,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
       type: 'select',
       label: t('CONTEXT'),
       value: 'none',
-      options: [
-        { id: 'none', label: t('NONE') },
-        { id: 'location', label: t('LOCATION') },
-        { id: 'locationType', label: t('LOCATION_TYPE') },
-      ],
+      options: contextTypeOptions(t),
     },
     {
       id: 'locationType',
@@ -193,7 +220,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
       type: 'select',
       label: t('LOCATION_TYPE'),
       options: [
-        { id: 'label', label: t('NAME') },
+        { id: 'name', label: t('NAME') },
         { id: 'coords', label: t('COORDINATES') },
       ],
     },
