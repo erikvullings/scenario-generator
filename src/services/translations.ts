@@ -49,6 +49,9 @@ export const messages = {
   DIMENSION: 'Dimension',
   SELECTION: 'Selected value',
   EDITOR_PLACEHOLDER: 'Edit narrative',
+  THRESHOLDS: 'Thresholds colors reflecting component usage',
+  THRESHOLD: 'Threshold value',
+  COLOR: 'Color',
   COMBINATIONS: {
     POSSIBLE: 'Combinations are possible',
     IMPOSSIBLE: 'Combinations are impossible',
@@ -139,6 +142,9 @@ export const messagesNL: typeof messages = {
   DIMENSION: 'Dimensie',
   SELECTION: 'Geselecteerde waarde',
   EDITOR_PLACEHOLDER: 'Bewerk verhaallijn',
+  THRESHOLDS: 'Kleuren voor weergave gebruik van componenten',
+  THRESHOLD: 'Drempelwaarde',
+  COLOR: 'Kleur',
   COMBINATIONS: {
     POSSIBLE: 'Combinaties zijn mogelijk',
     IMPOSSIBLE: 'Combinaties zijn onmogelijk',

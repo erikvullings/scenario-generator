@@ -5,6 +5,7 @@ import {
   ID,
   Inconsistencies,
   Scenario,
+  contextTypeOptions,
 } from '../models';
 import { MeiosisComponent, saveModel, setPage, t } from '../services';
 import {
@@ -74,14 +75,22 @@ export const SettingsPage: MeiosisComponent = () => {
         { id: 'id', autogenerate: 'id' },
         { id: 'label', type: 'text', className: 'col s6', label: t('NAME') },
         {
+          id: 'context',
+          type: 'select',
+          multiple: true,
+          className: 'col s6',
+          label: t('CONTEXT'),
+          options: contextTypeOptions(t),
+        },
+        {
           id: 'desc',
           type: 'text',
-          className: 'col s6',
+          className: 'col s12',
           label: t('DESCRIPTION'),
         },
       ],
       repeat: true,
-      pageSize: 100,
+      pageSize: 1,
       label: t('DIMENSIONS'),
     },
     {
@@ -102,6 +111,28 @@ export const SettingsPage: MeiosisComponent = () => {
       pageSize: 1,
       max: 2,
       label: t('CATEGORIES'),
+    },
+    {
+      id: 'thresholdColors',
+      label: t('THRESHOLDS'),
+      repeat: true,
+      sortProperty: 'threshold',
+      pageSize: 1,
+      type: [
+        {
+          id: 'threshold',
+          label: t('THRESHOLD'),
+          type: 'number',
+          min: 0,
+          className: 'col s6',
+        },
+        {
+          id: 'color',
+          label: t('COLOR'),
+          type: 'color',
+          className: 'col s6',
+        },
+      ],
     },
   ] as UIForm<Scenario>;
   let rowId: ID;
@@ -255,6 +286,7 @@ export const SettingsPage: MeiosisComponent = () => {
                       categories: [],
                       components: [],
                       narratives: [],
+                      thresholdColors: [],
                     } as Scenario,
                   } as DataModel;
                   saveModel(attrs, newModel);

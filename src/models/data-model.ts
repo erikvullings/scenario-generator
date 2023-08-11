@@ -1,3 +1,6 @@
+import { Translate, Options } from 'translate.js';
+import { messages } from '../services';
+
 export type DataModel = {
   version?: number;
   lastUpdate?: number;
@@ -51,15 +54,23 @@ export type Item = {
   id: ID;
   label: string;
   /** Description of the item, may use markdown */
-  desc: string;
+  desc?: string;
 };
+
+export const contextTypeOptions = (
+  t: Translate<typeof messages, Options>
+): Array<{ id: ContextType; label: string }> => [
+  { id: 'none', label: t('NONE') },
+  { id: 'location', label: t('LOCATION') },
+  { id: 'locationType', label: t('LOCATION_TYPE') },
+];
 
 export type ContextType = 'none' | 'location' | 'locationType';
 export type LocationType = 'name' | 'coords';
 export type LocationTypeType = 'list' | 'keyValue';
 
 export type ContextualItem = Item & {
-  context: ContextType;
+  context?: ContextType;
   /** Location name, e.g. the name of a city or landmark */
   location?: string;
   /** Type of location when the context is location, e.g. name or coordinates */
@@ -87,22 +98,44 @@ export type Narrative = Item & {
   saved: boolean;
 };
 
+/** HEX color code */
+export type Color = string;
+
+/** Threshold value and the corresponding color */
+export type ThresholdColor = { threshold: number; color: Color };
+
 export type Scenario = Item & {
+  /** Combinations of scenario components that should not be used together */
   inconsistencies: Inconsistencies;
+  /** Categories of components */
   categories: Category[];
+  /** Scenario components, also known as key factors and key values */
   components: ScenarioComponent[];
+  /** Stories consisting of scenario components and a narrative */
   narratives: Narrative[];
+  /** Color thresholds to indicate how often a scenario component is used */
+  thresholdColors: ThresholdColor[];
   // components: ScenarioComponent[];
 };
 
+/** Category of components, e.g. to separate context from narrative */
 export type Category = Item & {
   componentIds: ID[];
 };
 
+/** Key factors and their values that make up a narrative */
 export type ScenarioComponent = Item & {
+  /** Key factor values */
   values: ContextualItem[];
+  /** Are there any contexts that are relevant, such as a location or mitigation measures */
+  contexts?: ContextType[];
 };
 
+/**
+ * One example model
+ * TODO Create several models, e.g. one for security narratives,
+ * one for safety regions/L3, one for TBB, etc.
+ */
 export const defaultModel = {
   version: 1,
   lastUpdate: new Date().valueOf(),
@@ -258,6 +291,13 @@ export const defaultModel = {
           { id: '8fb1e1ab', label: 'Buitenpost' },
         ],
       },
+    ],
+    narratives: [],
+    thresholdColors: [
+      { threshold: 0, color: '#0000ff' },
+      { threshold: 1, color: '#00ffff' },
+      { threshold: 2, color: '#ffff00' },
+      { threshold: 3, color: '#ff0000' },
     ],
   },
 } as DataModel;
