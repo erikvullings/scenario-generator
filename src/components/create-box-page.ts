@@ -25,7 +25,7 @@ const BoxItem: MeiosisComponent<{
   item: ContextualItem;
   contexts?: ContextType[];
   form: UIForm<ContextualItem>;
-  color?: [Color, Color];
+  color: [Color, Color];
 }> = () => {
   let obj: ContextualItem;
   let contextAwareForm: UIForm<ContextualItem>;
@@ -55,14 +55,11 @@ const BoxItem: MeiosisComponent<{
     },
     view: ({ attrs }) => {
       const { item, id, color } = attrs;
-      console.log(color);
       return [
         m(
           'li.kanban-item.card.widget',
           {
-            style: color
-              ? `background-color: ${color[0]}; color: ${color[1]}`
-              : '',
+            style: `background-color: ${color[0]}; color: ${color[1]}`,
           },
           [
             m('.card-content', [
@@ -178,7 +175,7 @@ const BoxRow: MeiosisComponent<{
               contexts: sc.contexts,
               item: c,
               form,
-              color: compColor[c.id],
+              color: compColor[c.id] || compColor['OTHER'],
             })
           )
         ),
@@ -337,7 +334,9 @@ export const CreateBoxPage: MeiosisComponent = () => {
             acc[id] = [color, contrastingColor(color)];
             return acc;
           },
-          {} as { [key: ID]: [Color, Color] }
+          { OTHER: [count2color[0], contrastingColor(count2color[0])] } as {
+            [key: ID]: [Color, Color];
+          }
         );
       }
 
