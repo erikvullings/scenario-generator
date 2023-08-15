@@ -175,3 +175,24 @@ export const deepCopy = <T>(target: T): T => {
   }
   return target;
 };
+
+/** Compute a contrasting background color */
+export const contrastingColor = (backgroundColor: string) => {
+  const backgroundRgb = [
+    parseInt(backgroundColor[1] + backgroundColor[2], 16),
+    parseInt(backgroundColor[3] + backgroundColor[4], 16),
+    parseInt(backgroundColor[5] + backgroundColor[6], 16),
+  ];
+  const luminance =
+    0.2126 * backgroundRgb[0] +
+    0.7152 * backgroundRgb[1] +
+    0.0722 * backgroundRgb[2];
+
+  // If the background is dark, use white text.
+  if (luminance < 0.5) {
+    return '#ffffff';
+  }
+
+  // If the background is light, use black text.
+  return '#000000';
+};

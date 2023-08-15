@@ -1,7 +1,6 @@
 import m, { FactoryComponent } from 'mithril';
-import Quill, { DeltaOperation } from 'quill';
+import Quill from 'quill';
 import {
-  Button,
   FlatButton,
   ISelectOptions,
   Icon,
@@ -382,7 +381,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
           {
             oncreate: () => {
               editor = new Quill('#editor', {
-                debug: 'info',
+                // debug: 'info',
                 modules: {
                   toolbar: [
                     [{ header: [1, 2, false] }],

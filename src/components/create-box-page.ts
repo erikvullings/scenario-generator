@@ -7,6 +7,7 @@ import {
   ID,
   ContextType,
   contextTypeOptions,
+  Color,
 } from '../models';
 import {
   MeiosisComponent,
@@ -17,12 +18,14 @@ import {
 } from '../services';
 import { FlatButton, ModalPanel, Tabs } from 'mithril-materialized';
 import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
+import { contrastingColor, generateNumbers } from '../utils';
 
 const BoxItem: MeiosisComponent<{
   id: ID;
   item: ContextualItem;
   contexts?: ContextType[];
   form: UIForm<ContextualItem>;
+  color?: [Color, Color];
 }> = () => {
   let obj: ContextualItem;
   let contextAwareForm: UIForm<ContextualItem>;
@@ -51,19 +54,28 @@ const BoxItem: MeiosisComponent<{
       obj = { ...item };
     },
     view: ({ attrs }) => {
-      const { item, id, form } = attrs;
+      const { item, id, color } = attrs;
+      console.log(color);
       return [
-        m('li.kanban-item.card.widget', [
-          m('.card-content', [
-            m('span.card-title', item.label),
-            m(FlatButton, {
-              className: 'top-right widget-link',
-              iconName: 'edit',
-              iconClass: 'no-gutter',
-              modalId: item.id,
-            }),
-          ]),
-        ]),
+        m(
+          'li.kanban-item.card.widget',
+          {
+            style: color
+              ? `background-color: ${color[0]}; color: ${color[1]}`
+              : '',
+          },
+          [
+            m('.card-content', [
+              m('span.card-title', item.label),
+              m(FlatButton, {
+                className: 'top-right widget-link',
+                iconName: 'edit',
+                iconClass: 'no-gutter',
+                modalId: item.id,
+              }),
+            ]),
+          ]
+        ),
         m(ModalPanel, {
           id: item.id,
           title: t('EDIT_COMPONENT'),
@@ -149,10 +161,11 @@ const BoxHeader: MeiosisComponent<{
 const BoxRow: MeiosisComponent<{
   sc: ScenarioComponent;
   form: UIForm<ContextualItem>;
+  compColor: { [key: ID]: [Color, Color] };
 }> = () => {
   return {
     view: ({ attrs }) => {
-      const { sc, form } = attrs;
+      const { sc, form, compColor } = attrs;
 
       return m('li', [
         m(
@@ -165,6 +178,7 @@ const BoxRow: MeiosisComponent<{
               contexts: sc.contexts,
               item: c,
               form,
+              color: compColor[c.id],
             })
           )
         ),
@@ -176,12 +190,14 @@ const BoxRow: MeiosisComponent<{
 const BoxView: MeiosisComponent<{
   categoryId: number;
   form: UIForm<ContextualItem>;
+  compColor: { [key: ID]: [Color, Color] };
 }> = () => {
   return {
     view: ({ attrs }) => {
       const {
         form,
         categoryId,
+        compColor,
         state: {
           model: { scenario },
         },
@@ -195,7 +211,7 @@ const BoxView: MeiosisComponent<{
       return m('ul.kanban', [
         // m(
         // '.kanban-row',
-        scs.map((sc) => m(BoxRow, { ...attrs, sc, form })),
+        scs.map((sc) => m(BoxRow, { ...attrs, sc, form, compColor })),
         // ),
       ]);
     },
@@ -272,14 +288,58 @@ export const CreateBoxPage: MeiosisComponent = () => {
       label: t('VALUE'),
     },
   ] as UIForm<ContextualItem>;
+  let compColor: { [key: ID]: [Color, Color] } = {};
 
   return {
-    oninit: ({ attrs }) => setPage(attrs, Dashboards.DEFINE_BOX),
+    oninit: ({ attrs }) => {
+      setPage(attrs, Dashboards.DEFINE_BOX);
+    },
     view: ({ attrs }) => {
       const {
         model: { scenario },
       } = attrs.state;
-      const { categories } = scenario;
+      const { categories, thresholdColors = [] } = scenario;
+
+      if (compColor || Object.keys(compColor).length < thresholdColors.length) {
+        const { narratives = [] } = scenario;
+        const componentUsage = narratives.reduce((acc, cur) => {
+          const { components } = cur;
+          Object.keys(components).forEach((c) => {
+            for (const compValue of components[c]) {
+              if (acc[compValue]) {
+                acc[compValue]++;
+              } else {
+                acc[compValue] = 1;
+              }
+            }
+          });
+          return acc;
+        }, {} as { [key: ID]: number });
+        const count2color: Color[] = generateNumbers(
+          0,
+          Math.max(...thresholdColors.map((c) => c.threshold))
+        ).map((_) => '');
+        let i = 0;
+        thresholdColors
+          .sort((a, b) => (a.threshold > b.threshold ? 1 : -1))
+          .forEach((tc) => {
+            do {
+              count2color[i] = tc.color;
+              i++;
+            } while (i < tc.threshold);
+          });
+        compColor = Object.entries(componentUsage).reduce(
+          (acc, [id, count]) => {
+            const color =
+              count < count2color.length
+                ? count2color[count]
+                : count2color[count2color.length - 1];
+            acc[id] = [color, contrastingColor(color)];
+            return acc;
+          },
+          {} as { [key: ID]: [Color, Color] }
+        );
+      }
 
       return [
         m(
@@ -289,11 +349,16 @@ export const CreateBoxPage: MeiosisComponent = () => {
                 tabs: categories.map((c, categoryId) => ({
                   id: c.id,
                   title: c.label,
-                  vnode: m(BoxView, { ...attrs, categoryId, form }),
+                  vnode: m(BoxView, {
+                    ...attrs,
+                    compColor,
+                    categoryId,
+                    form,
+                  }),
                 })),
               })
             : categories.length === 1
-            ? m(BoxView, { ...attrs, categoryId: 0, form })
+            ? m(BoxView, { ...attrs, compColor, categoryId: 0, form })
             : 'FIRST DEFINE SOME COMPONENT CATEGORIES'
         ),
       ];
