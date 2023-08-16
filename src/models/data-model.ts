@@ -19,7 +19,13 @@ export type OldDataModel = {
         [key: string]: string[];
       };
       inconsistencies: Inconsistency[];
-      narratives: Narrative[];
+      narratives: Array<{
+        id: string;
+        name: string;
+        components: { [key: ID]: ID };
+        narrative: string;
+        included: boolean;
+      }>;
     };
   };
 } & {
@@ -29,6 +35,14 @@ export type OldDataModel = {
       name: string;
       type: string;
       desc?: string;
+      context?: {
+        type: 'LOCATION' | 'LOCATIONTYPE';
+        data: {
+          COORDINATES?: string;
+          NAME?: string;
+          [key: string]: string | undefined;
+        };
+      };
     }>;
   };
 };
@@ -76,7 +90,7 @@ export type ContextualItem = Item & {
   /** Type of location when the context is location, e.g. name or coordinates */
   locationType?: LocationType;
   /** Type of location when the context is locationType, e.g. pick from a default list or OSM key value */
-  locationTypeType?: LocationType;
+  locationTypeType?: LocationTypeType;
   /** Location's latitude, WGS84 */
   lat?: number;
   /** Location's longitude, WGS84 */
@@ -125,11 +139,21 @@ export type Category = Item & {
 
 /** Key factors and their values that make up a narrative */
 export type ScenarioComponent = Item & {
+  /** Optional sort order */
+  order?: number;
   /** Key factor values */
   values: ContextualItem[];
   /** Are there any contexts that are relevant, such as a location or mitigation measures */
   contexts?: ContextType[];
 };
+
+/** Default threshold colors */
+export const thresholdColors = [
+  { threshold: 0, color: '#ddeced' },
+  { threshold: 1, color: 'rgb(255, 120, 0)' },
+  { threshold: 2, color: '#ffff00' },
+  { threshold: 3, color: '#ff0000' },
+];
 
 /**
  * One example model
@@ -293,12 +317,7 @@ export const defaultModel = {
       },
     ],
     narratives: [],
-    thresholdColors: [
-      { threshold: 0, color: '#0000ff' },
-      { threshold: 1, color: '#00ffff' },
-      { threshold: 2, color: '#ffff00' },
-      { threshold: 3, color: '#ff0000' },
-    ],
+    thresholdColors,
   },
 } as DataModel;
 

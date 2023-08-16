@@ -646,7 +646,7 @@ a.waves-effect.waves-teal.btn-flat.selected {
   flex-flow: column nowrap;
   padding: 0;
   margin-top: 10px;
-  margin-right: 10px;
+  /* margin-right: 10px; */
   list-style: none;
   height: 100%;
   width: 220px;
@@ -734,6 +734,6 @@ ul.kanban > li {
 .scenario-table .icons {
   display: flex;
   flex-wrap: nowrap;
-  justify-content: left;
+  justify-content: right;
   align-items: flex-start;
 }

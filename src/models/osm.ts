@@ -26,3 +26,6 @@ export const OsmTypes: OsmType[] = [
   { id: 'stadspoort', name: 'Stadspoort', key: 'historic', value: 'city_gate' },
   { id: 'statue', name: 'Statue', key: 'memorial', value: 'statue' },
 ];
+
+/** List of all the OSM types */
+export const OsmTypeList = OsmTypes.map(({ id }) => id);

@@ -52,6 +52,7 @@ export const messages = {
   THRESHOLDS: 'Thresholds colors reflecting component usage',
   THRESHOLD: 'Threshold value',
   COLOR: 'Color',
+  ORDER: 'Order',
   COMBINATIONS: {
     POSSIBLE: 'Combinations are possible',
     IMPOSSIBLE: 'Combinations are impossible',
@@ -145,6 +146,7 @@ export const messagesNL: typeof messages = {
   THRESHOLDS: 'Kleuren voor weergave gebruik van componenten',
   THRESHOLD: 'Drempelwaarde',
   COLOR: 'Kleur',
+  ORDER: 'Volgorde',
   COMBINATIONS: {
     POSSIBLE: 'Combinaties zijn mogelijk',
     IMPOSSIBLE: 'Combinaties zijn onmogelijk',

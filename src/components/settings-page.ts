@@ -73,7 +73,18 @@ export const SettingsPage: MeiosisComponent = () => {
       id: 'components',
       type: [
         { id: 'id', autogenerate: 'id' },
-        { id: 'label', type: 'text', className: 'col s6', label: t('NAME') },
+        {
+          id: 'order',
+          type: 'number',
+          className: 'col s3 m2',
+          label: t('ORDER'),
+        },
+        {
+          id: 'label',
+          type: 'text',
+          className: 'col s3 m4',
+          label: t('NAME'),
+        },
         {
           id: 'context',
           type: 'select',
@@ -91,6 +102,7 @@ export const SettingsPage: MeiosisComponent = () => {
       ],
       repeat: true,
       pageSize: 1,
+      sortProperty: 'order',
       label: t('DIMENSIONS'),
     },
     {

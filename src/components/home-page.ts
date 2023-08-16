@@ -12,14 +12,8 @@ import {
   setPage,
   t,
 } from '../services';
-import {
-  Dashboards,
-  DataModel,
-  OldDataModel,
-  Scenario,
-  defaultModel,
-} from '../models';
-import { formatDate } from '../utils';
+import { Dashboards, DataModel, OldDataModel, defaultModel } from '../models';
+import { convertFromOld, formatDate } from '../utils';
 // import { padLeft } from '';
 
 export const HomePage: MeiosisComponent = () => {
@@ -110,9 +104,7 @@ export const HomePage: MeiosisComponent = () => {
                   typeof model.version === 'undefined' ? 1 : ++model.version;
                 const dataStr =
                   'data:text/json;charset=utf-8,' +
-                  encodeURIComponent(
-                    JSON.stringify({ ...model, version }, null, 2)
-                  );
+                  encodeURIComponent(JSON.stringify({ ...model, version }));
                 dlAnchorElem.setAttribute('href', dataStr);
                 dlAnchorElem.setAttribute(
                   'download',
@@ -124,7 +116,7 @@ export const HomePage: MeiosisComponent = () => {
                 dlAnchorElem.click();
               },
             }),
-            m('input#selectFiles[type=file][accept=.pdf]', {
+            m('input#selectFiles[type=file][accept=.json]', {
               style: 'display:none',
             }),
             // m('input#selectFiles[type=file][accept=.json,.pdf]', { style: 'display:none' }),
@@ -154,15 +146,19 @@ export const HomePage: MeiosisComponent = () => {
                           e.target &&
                           e.target.result) as string;
                         const json = JSON.parse(result.toString()) as
-                          | {
-                              version?: number;
-                              scenario?: Scenario;
-                            }
+                          | DataModel
                           | OldDataModel;
-                        json &&
-                          json.version &&
-                          saveModel(attrs, json as DataModel);
-                        changePage(attrs, Dashboards.HOME);
+                        if (json) {
+                          const dataModel = json.version
+                            ? (json as DataModel)
+                            : convertFromOld(json as OldDataModel);
+                          saveModel(attrs, dataModel);
+                          changePage(attrs, Dashboards.DEFINE_BOX);
+                        }
+                        // json &&
+                        //   json.version &&
+                        //   saveModel(attrs, json as DataModel);
+                        // changePage(attrs, Dashboards.HOME);
                       }
                     };
                     if (data) {

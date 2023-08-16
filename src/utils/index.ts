@@ -1,7 +1,16 @@
 import m from 'mithril';
 import { padLeft } from 'mithril-materialized';
 import { render } from 'mithril-ui-form';
-import { ID } from '../models';
+import {
+  ContextType,
+  DataModel,
+  ID,
+  Inconsistencies,
+  OldDataModel,
+  OsmTypeList,
+  Scenario,
+  thresholdColors,
+} from '../models';
 
 const supRegex = /\^([^_ ]+)(_|$|\s)/g;
 const subRegex = /\_([^\^ ]+)(\^|$|\s)/g;
@@ -189,10 +198,154 @@ export const contrastingColor = (backgroundColor: string) => {
     0.0722 * backgroundRgb[2];
 
   // If the background is dark, use white text.
-  if (luminance < 0.5) {
+  if (luminance < 20) {
     return '#ffffff';
   }
 
   // If the background is light, use black text.
   return '#000000';
+};
+
+export const convertFromOld = (old: OldDataModel): DataModel => {
+  return Object.keys(old).reduce(
+    (acc, cur) => {
+      if (cur === 'scenarios') {
+        // Parse scenarios
+        const scenario = old[cur].current;
+        acc.scenario.id = scenario.id;
+        acc.scenario.label = scenario.name;
+        acc.scenario.desc = scenario.desc;
+        acc.scenario.inconsistencies = scenario.inconsistencies.reduce(
+          (acc, cur) => {
+            const {
+              ids: [from, to],
+              type,
+            } = cur;
+            if (!acc[from]) acc[from] = {};
+            if (!acc[to]) acc[to] = {};
+            const value = type === 'totally' ? true : false;
+            acc[from][to] = value;
+            acc[to][from] = value;
+            return acc;
+          },
+          {} as Inconsistencies
+        );
+        acc.scenario.narratives = scenario.narratives.map(
+          ({ id, name, components, narrative, included }) => ({
+            id,
+            label: name,
+            components: Object.keys(components).reduce((acc, key) => {
+              acc[key] = [components[key]];
+              return acc;
+            }, {} as { [key: ID]: ID[] }),
+            desc: narrative,
+            included,
+            saved: true,
+          })
+        );
+        acc.scenario.categories = Object.keys(scenario.categories).map(
+          (key) => ({
+            id: key,
+            label: key,
+            componentIds: scenario.categories[key],
+          })
+        );
+      } else {
+        // Parse components
+        if (!acc.scenario.components) acc.scenario.components = [];
+        const componentValues = old[cur].list;
+        const contexts = componentValues.reduce((acc, cur) => {
+          if (cur.context && cur.context.type) {
+            if (cur.context.type === 'LOCATION' && acc.indexOf('location') <= 0)
+              acc.push('location');
+            else if (
+              cur.context.type === 'LOCATIONTYPE' &&
+              acc.indexOf('locationType') <= 0
+            )
+              acc.push('locationType');
+          }
+          return acc;
+        }, [] as ContextType[]);
+        acc.scenario.components.push({
+          id: cur,
+          label: cur,
+          contexts,
+          values: componentValues.map(({ name, id, desc, context }) => {
+            const newContext = context
+              ? context.type === 'LOCATION'
+                ? 'location'
+                : context.type === 'LOCATIONTYPE'
+                ? 'locationType'
+                : 'none'
+              : undefined;
+            const locationType =
+              context && context.type === 'LOCATION'
+                ? context.data.NAME
+                  ? 'name'
+                  : context.data.COORDINATES
+                  ? 'coords'
+                  : undefined
+                : undefined;
+            const [lat, lon] =
+              locationType === 'coords' && context!.data.COORDINATES
+                ? context!.data.COORDINATES.split(/,/).map((n) => +n)
+                : [undefined, undefined];
+            const locationTypeType =
+              context && context.type === 'LOCATIONTYPE'
+                ? OsmTypeList.indexOf(Object.keys(context.data).shift()) >= 0
+                  ? 'list'
+                  : 'keyValue'
+                : undefined;
+            const osmTypeId =
+              locationTypeType === 'list'
+                ? Object.keys(context!.data).shift()
+                : undefined;
+            const keyValue =
+              locationTypeType === 'keyValue'
+                ? Object.entries(context!.data).shift()
+                : undefined;
+            const [key, value] = keyValue || [undefined, undefined];
+            return {
+              id,
+              label: name,
+              desc,
+              context: newContext,
+              location:
+                context && context.type === 'LOCATION'
+                  ? context.data.NAME
+                  : undefined,
+              locationType,
+              locationTypeType,
+              lat,
+              lon,
+              osmTypeId,
+              key,
+              value,
+            };
+          }),
+        });
+        acc.scenario.thresholdColors = thresholdColors;
+        if (acc.scenario.categories) {
+          let order = 1;
+          const compIds = acc.scenario.categories.reduce((acc, cur) => {
+            cur.componentIds.forEach((c) => (acc[c] = order++));
+            return acc;
+          }, {} as { [key: ID]: number });
+          acc.scenario.components = acc.scenario.components.map((c) => ({
+            ...c,
+            order: compIds[c.id],
+          }));
+          acc.scenario.components.sort((a, b) =>
+            a.order! > b.order! ? 1 : -1
+          );
+        }
+      }
+      return acc;
+    },
+    {
+      scenario: {} as Scenario,
+      version: 1,
+      lastUpdata: Date.now(),
+    } as DataModel
+  );
 };

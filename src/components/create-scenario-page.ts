@@ -76,8 +76,8 @@ export const CategoryTable: MeiosisComponent<{
         category &&
         comps &&
         m('.scenario-table.row', [
-          m('.col.s10', multipleCategories && m('h5', category.label)),
-          m('.col.s2.icons', [
+          m('.col.s11', multipleCategories && m('h5', category.label)),
+          m('.col.s1.icons', [
             m(ToggleIcon, {
               on: 'visibility',
               off: 'visibility_off',
@@ -112,7 +112,7 @@ export const CategoryTable: MeiosisComponent<{
                 label: c.label,
                 key: `key${excludedComps[c.id]}`,
                 placeholder: ' ',
-                className: 'col s10',
+                className: 'col s11',
                 multiple: true,
                 disabled:
                   typeof excludedComps[c.id] !== 'undefined' &&
@@ -128,7 +128,7 @@ export const CategoryTable: MeiosisComponent<{
                 },
               } as ISelectOptions<string>),
             ],
-            m('.col.s2.icons', [
+            m('.col.s1.icons', [
               m(ToggleIcon, {
                 on: 'visibility',
                 off: 'visibility_off',

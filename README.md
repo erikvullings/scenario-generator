@@ -14,8 +14,8 @@ Generate a threat scenario from a self-defined morphological box.
 - [DONE] Implement page for inconsistency settings
 - [DONE] Implement page for scenario generation
 - Implement page for showing scenarios
-- Save data model
-- Load old data model
+- [DONE] Save data model
+- [DONE] Load old data model
 - Implement OSM functionality
 - Add tooltip to show the description of a component... perhaps a fixed location, as it is rather annoying to see it popup all the time, or after a timeout?
 - Make generating a value optional, so some key values (component values) need to be specified manually. E.g. use the 'manual' property for each component (key factor). For example, when splitting the narrative between the threat and measures to counter the threat, you would like to choose the latter manually.
@@ -35,5 +35,5 @@ Generate a threat scenario from a self-defined morphological box.
 - [DONE] admin interface / hidden elementen / flow aangeven: Wegwerken elementen die je maar zelden gebruikt in admin optie. Mogelijkheid om keuzemogelijkheden te verbergen als ze niet relevant zijn voor in een bepaalde context. Flow aangeven: voornamelijk lay-out zo maken dat volgorde logisch wordt.
 - landing page overzicht scenario's: Snel overzicht gebruikte/alle scenario’s. Sortering: alfabetisch, (evt op waarschijnlijkheid.) Per scenario stam plus ‘tagline’.
 - Rekening houden met inlezen oude scenario’s	Compatible of converteren
-- Export functies aanpassen aan update bovenstaande functies
+- [DONE] Export functies aanpassen aan update bovenstaande functies
 - Help functie bijwerken: In de applicatie zetten
