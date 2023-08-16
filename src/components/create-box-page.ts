@@ -77,11 +77,14 @@ const BoxItem: MeiosisComponent<{
           id: item.id,
           title: t('EDIT_COMPONENT'),
           fixedFooter: true,
-          description: m(LayoutForm, {
-            form: contextAwareForm,
-            obj,
-            i18n: i18n.i18n,
-          } as FormAttributes<ContextualItem>),
+          description: m(
+            '.row',
+            m(LayoutForm, {
+              form: contextAwareForm,
+              obj,
+              i18n: i18n.i18n,
+            } as FormAttributes<ContextualItem>)
+          ),
           // options: { opacity: 0.7 },
           buttons: [
             {
@@ -232,6 +235,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
       show: ['context=location'],
       type: 'select',
       label: t('LOCATION_TYPE'),
+      className: 'col s6',
       options: [
         { id: 'name', label: t('NAME') },
         { id: 'coords', label: t('COORDINATES') },
@@ -241,18 +245,21 @@ export const CreateBoxPage: MeiosisComponent = () => {
       id: 'location',
       show: ['context=location & locationType=name'],
       type: 'text',
+      className: 'col s6',
       label: t('LOCATION_NAME'),
     },
     {
       id: 'lat',
       show: ['context=location & locationType=coords'],
       type: 'number',
+      className: 'col s3',
       label: t('LATITUDE'),
     },
     {
       id: 'lon',
       show: ['context=location & locationType=coords'],
       type: 'number',
+      className: 'col s3',
       label: t('LONGITUDE'),
     },
     {
@@ -260,6 +267,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
       show: ['context=locationType'],
       type: 'select',
       label: t('LOCATION_TYPE'),
+      className: 'col s6',
       options: [
         { id: 'list', label: t('PICK_FROM_LIST') },
         { id: 'keyValue', label: t('ENTER_KEY_VALUE') },
@@ -270,18 +278,21 @@ export const CreateBoxPage: MeiosisComponent = () => {
       show: ['context=locationType & locationTypeType=list'],
       type: 'select',
       label: t('NAME'),
+      className: 'col s6',
       options: OsmTypes.map(({ id, name }) => ({ id, label: name })),
     },
     {
       id: 'value',
       show: ['context=locationType & locationTypeType=keyValue'],
       type: 'text',
+      className: 'col s3',
       label: t('KEY'),
     },
     {
       id: 'key',
       show: ['context=locationType & locationTypeType=keyValue'],
       type: 'text',
+      className: 'col s3',
       label: t('VALUE'),
     },
   ] as UIForm<ContextualItem>;
