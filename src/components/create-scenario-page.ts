@@ -388,7 +388,16 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                 modules: {
                   toolbar: [
                     [{ header: [1, 2, false] }],
-                    ['bold', 'italic', 'underline'],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+                    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+                    [
+                      { color: [] },
+                      // , { background: [] }
+                    ], // dropdown with defaults from theme
+                    // [{ font: [] }],
+                    [{ align: [] }],
                     ['image', 'code-block'],
                   ],
                 },
@@ -425,7 +434,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               }),
               m('.col.s4', []),
             ]),
-            m('#toolbar'),
+            // m('#toolbar'),
             m('#editor', {}),
           ]
         ),

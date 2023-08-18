@@ -1,8 +1,14 @@
 import m, { FactoryComponent } from 'mithril';
 import { Dashboards, ID, Narrative, ScenarioComponent } from '../models';
 import { MeiosisComponent, setPage, t } from '../services';
-import { Select, ISelectOptions } from 'mithril-materialized';
+import {
+  Select,
+  ISelectOptions,
+  InputCheckbox,
+  TextInput,
+} from 'mithril-materialized';
 import { deepCopy } from 'mithril-ui-form';
+import Quill from 'quill';
 
 const CategoryTable: FactoryComponent<{
   curNarrative?: Narrative;
@@ -33,6 +39,8 @@ const CategoryTable: FactoryComponent<{
 };
 
 export const ShowScenarioPage: MeiosisComponent = () => {
+  let editor: Quill;
+
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.SHOW_SCENARIO),
     view: ({ attrs }) => {
@@ -42,6 +50,18 @@ export const ShowScenarioPage: MeiosisComponent = () => {
       const {
         scenario: { categories = [], components: modelComps = [] },
       } = model;
+      const multipleCategories = categories.length > 1;
+      if (
+        (!curNarrative || !curNarrative.saved) &&
+        model.scenario.narratives &&
+        model.scenario.narratives.length > 0
+      ) {
+        const newNarrative = model.scenario.narratives[0];
+        attrs.update({
+          curNarrative: () => deepCopy(newNarrative),
+        });
+        return;
+      }
 
       return m('.show-scenario.row', [
         m('.col.s12', [
@@ -63,9 +83,9 @@ export const ShowScenarioPage: MeiosisComponent = () => {
                     .filter((n) => n.id === v[0])
                     .shift();
                   if (newNarrative) {
-                    // editor.setContents(
-                    //   newNarrative.desc ? JSON.parse(newNarrative.desc) : []
-                    // );
+                    editor.setContents(
+                      newNarrative.desc ? JSON.parse(newNarrative.desc) : []
+                    );
                   }
                   attrs.update({
                     curNarrative: () => deepCopy(newNarrative),
@@ -79,7 +99,7 @@ export const ShowScenarioPage: MeiosisComponent = () => {
               },
             } as ISelectOptions<string>),
         ]),
-        curNarrative &&
+        curNarrative && [
           m(
             '.col.s12',
             m('.row', [
@@ -93,11 +113,65 @@ export const ShowScenarioPage: MeiosisComponent = () => {
                   {
                     className: `s${12 / categories.length}`,
                   },
+                  multipleCategories && m('h5', category.label),
                   m(CategoryTable, { curNarrative, comps })
                 );
               }),
             ])
           ),
+          m(
+            '.col.s12',
+            {
+              oncreate: () => {
+                editor = new Quill('#editor', {
+                  // debug: 'info',
+                  modules: {
+                    toolbar: false,
+                  },
+                  placeholder: t('EDITOR_PLACEHOLDER'),
+                  readOnly: true,
+                  theme: 'snow',
+                });
+                editor.setContents(
+                  curNarrative.desc ? JSON.parse(curNarrative.desc) : []
+                );
+
+                // editor.on('text-change', () => {
+                //   curNarrative.desc = JSON.stringify(editor.getContents());
+                //   attrs.update({ curNarrative });
+                // });
+              },
+            },
+            [
+              m('.row', [
+                // m(TextInput, {
+                //   disabled: true,
+                //   className: 'col s4',
+                //   initialValue: curNarrative.label,
+                //   label: t('NAME_NARRATIVE'),
+                //   required: true,
+                //   onchange: (n) => {
+                //     curNarrative.label = n;
+                //     attrs.update({ curNarrative });
+                //   },
+                // }),
+                // m(InputCheckbox, {
+                //   disabled: true,
+                //   className: 'col s4 mt25',
+                //   initialValue: curNarrative.included,
+                //   label: t('INCLUDE_NARRATIVE'),
+                //   onchange: (n) => {
+                //     curNarrative.included = n;
+                //     attrs.update({ curNarrative });
+                //   },
+                // }),
+                // m('.col.s4', []),
+              ]),
+              // m('#toolbar'),
+              m('#editor', {}),
+            ]
+          ),
+        ],
       ]);
     },
   };
