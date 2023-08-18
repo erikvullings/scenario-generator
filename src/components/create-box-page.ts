@@ -64,6 +64,7 @@ const BoxItem: MeiosisComponent<{
           [
             m('.card-content', [
               m('span.card-title', item.label),
+              item.desc && m('span.card-desc', item.desc),
               m(FlatButton, {
                 className: 'top-right widget-link',
                 iconName: 'edit',

@@ -665,17 +665,37 @@ a.waves-effect.waves-teal.btn-flat.selected {
   align-items: center;
 }
 .kanban-item {
-  background: tomato;
   padding: 0px;
   min-width: 200px;
   width: 200px;
-  height: 100px;
+  min-height: 100px;
   margin-top: 0px;
   margin-left: 10px;
   color: white;
-  font-weight: bold;
-  font-size: 3em;
   text-align: center;
+
+  & .card-content {
+    font-size: 0.8rem;
+    padding: 24pt 4px 0 4px;
+    & > .card-title {
+      margin-bottom: 0;
+    }
+  }
+  & .card-desc {
+    display: none;
+    font-size: 0.9rem;
+    padding: 4px;
+    transition-delay: 4s;
+    text-align: left;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &:hover .card-desc {
+    display: block;
+    transition-delay: 4s;
+  }
 }
 .title {
   font-size: 1.25rem;
@@ -707,6 +727,11 @@ a.waves-effect.waves-teal.btn-flat.selected {
   position: absolute;
   top: 0;
   right: 0;
+}
+.top-right-next {
+  position: absolute;
+  top: 4px;
+  right: 35px;
 }
 ul.kanban > li {
   margin-bottom: 10px;
