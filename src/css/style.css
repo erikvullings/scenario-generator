@@ -29,6 +29,7 @@ nav .title {
   font-size: 2rem;
 }
 .input-field,
+.switch > label,
 .input-field > label,
 .input-field > .material-icons,
 .dropdown-content > li > a,

@@ -25,15 +25,17 @@ const ToggleIcon: FactoryComponent<{
   on: string;
   off: string;
   value: boolean;
+  disabled?: boolean;
   callback: (newValue: boolean) => void;
 }> = () => {
   return {
-    view: ({ attrs: { on, off, value, callback } }) => {
+    view: ({ attrs: { on, off, value, disabled, callback } }) => {
       const iconName = value ? on : off;
       return m(Icon, {
-        className: 'clickable',
+        className: `clickable${disabled ? ' grey-text' : ''}`,
         iconName,
-        onclick: () => callback(!value),
+        disabled,
+        onclick: disabled ? {} : () => callback(!value),
       });
     },
   };
@@ -47,29 +49,26 @@ export const CategoryTable: MeiosisComponent<{
   let comps: ScenarioComponent[] | undefined;
   let lockState = false;
   return {
-    oninit: ({ attrs }) => {
+    view: ({ attrs }) => {
       const {
         catId,
-        state: { model },
+        state: {
+          model,
+          excludedComps = {},
+          lockedComps = {},
+          curNarrative = {} as Narrative,
+        },
       } = attrs;
       const {
-        scenario: { categories = [], components = [] },
+        scenario: { categories = [], components: modelComps = [] },
       } = model;
       multipleCategories = categories.length > 1;
       category = categories.filter((c) => c.id === catId).shift();
       const componentIds = category && category.componentIds;
       comps =
         componentIds &&
-        components.filter((c) => componentIds.indexOf(c.id) >= 0);
-    },
-    view: ({ attrs }) => {
-      const {
-        state: {
-          excludedComps = {},
-          lockedComps = {},
-          curNarrative = {} as Narrative,
-        },
-      } = attrs;
+        modelComps.filter((c) => componentIds.indexOf(c.id) >= 0);
+
       const { components = {} } = curNarrative;
 
       return (
@@ -129,9 +128,15 @@ export const CategoryTable: MeiosisComponent<{
               } as ISelectOptions<string>),
             ],
             m('.col.s1.icons', [
+              c.manual &&
+                m(Icon, {
+                  iconName: 'front_hand',
+                  className: 'grey-text',
+                }),
               m(ToggleIcon, {
                 on: 'visibility',
                 off: 'visibility_off',
+                disabled: c.manual,
                 value: excludedComps[c.id] ? false : true,
                 callback: (v) => {
                   attrs.update({
@@ -145,7 +150,8 @@ export const CategoryTable: MeiosisComponent<{
               m(ToggleIcon, {
                 on: 'lock_open',
                 off: 'lock',
-                value: lockedComps[c.id] ? false : true,
+                disabled: c.manual,
+                value: c.manual || lockedComps[c.id] ? false : true,
                 callback: (v) => {
                   attrs.update({
                     lockedComps: (e = {}) => {
@@ -194,6 +200,7 @@ const generateNarrative = (
         if (chosen.hasOwnProperty(catComp.id)) {
           const chosenValue = chosen[catComp.id];
           if (
+            chosenValue &&
             chosenValue.length &&
             inconsistencies.hasOwnProperty(chosenValue[0])
           ) {
@@ -249,7 +256,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
             label: t('GENERATE_NARRATIVE'),
             iconName: 'refresh',
             onclick: () => {
-              const { components } = curNarrative;
+              const { components = {} } = curNarrative;
               const locked = components
                 ? Object.keys(lockedComps).reduce((acc, cur) => {
                     if (lockedComps[cur]) {
@@ -258,6 +265,11 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                     return acc;
                   }, {} as Record<ID, ID[]>)
                 : ({} as Record<ID, ID[]>);
+              model.scenario.components
+                .filter((c) => c.manual)
+                .forEach((c) => {
+                  locked[c.id] = components[c.id];
+                });
               const narrative = generateNarrative(model.scenario, locked);
               if (!narrative) {
                 alert('Narrative not generated in 100 tries');

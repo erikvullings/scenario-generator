@@ -17,8 +17,9 @@ Generate a threat scenario from a self-defined morphological box.
 - [DONE] Save data model
 - [DONE] Load old data model
 - Implement OSM functionality
+- Implement copy functionality?
 - [DONE] Add tooltip to show the description of a component... perhaps a fixed location, as it is rather annoying to see it popup all the time, or after a timeout?
-- Make generating a value optional, so some key values (component values) need to be specified manually. E.g. use the 'manual' property for each component (key factor). For example, when splitting the narrative between the threat and measures to counter the threat, you would like to choose the latter manually.
+- [DONE] Make generating a value optional, so some key values (component values) need to be specified manually. E.g. use the 'manual' property for each component (key factor). For example, when splitting the narrative between the threat and measures to counter the threat, you would like to choose the latter manually.
 - Provide a context function of additional comments, e.g. to indicate tips on usage. E.g. when suggesting a measure that either reduces the chance, or reduces the effect, add tips on how to implement it.
 - Clear function should be renamed to NEW: and when pressing it, allow the user to choose one of several available models, e.g. one for threat scenarios, one for safety regions, DBB, etc. When selecting the models, choose whether to open the whole model (so including the key values), or only the key factors (components).
 - Indicate how plausible a combination of certain key values is, e.g. if there are multiple combinations that are not very likely, the whole is even less likely too.
@@ -37,3 +38,4 @@ Generate a threat scenario from a self-defined morphological box.
 - Rekening houden met inlezen oude scenario’s	Compatible of converteren
 - [DONE] Export functies aanpassen aan update bovenstaande functies
 - Help functie bijwerken: In de applicatie zetten
+- Do we want a visibility (eye) when creating a narrative?

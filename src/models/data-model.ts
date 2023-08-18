@@ -141,6 +141,8 @@ export type Category = Item & {
 export type ScenarioComponent = Item & {
   /** Optional sort order */
   order?: number;
+  /** Manual mode - if so, do not automatically generate a value for it */
+  manual?: boolean;
   /** Key factor values */
   values: ContextualItem[];
   /** Are there any contexts that are relevant, such as a location or mitigation measures */
