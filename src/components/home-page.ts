@@ -1,6 +1,6 @@
 import m from 'mithril';
 import { Button, Icon, ModalPanel, padLeft } from 'mithril-materialized';
-import background from '../assets/background2.webp';
+import background from '../assets/background.webp';
 import DutchFlag from '../assets/flag-nl.png';
 import EnglishFlag from '../assets/flag-en.png';
 import {
