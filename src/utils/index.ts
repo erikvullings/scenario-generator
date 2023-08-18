@@ -11,6 +11,7 @@ import {
   Scenario,
   thresholdColors,
 } from '../models';
+import { t } from '../services';
 
 const supRegex = /\^([^_ ]+)(_|$|\s)/g;
 const subRegex = /\_([^\^ ]+)(\^|$|\s)/g;
@@ -268,7 +269,7 @@ export const convertFromOld = (old: OldDataModel): DataModel => {
         }, [] as ContextType[]);
         acc.scenario.components.push({
           id: cur,
-          label: cur,
+          label: t('COMP', cur.toUpperCase() as any),
           contexts,
           values: componentValues.map(({ name, id, desc, context }) => {
             const newContext = context
