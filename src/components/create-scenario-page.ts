@@ -10,14 +10,7 @@ import {
   TextInput,
   uniqueId,
 } from 'mithril-materialized';
-import {
-  Category,
-  Dashboards,
-  ID,
-  Narrative,
-  Scenario,
-  ScenarioComponent,
-} from '../models';
+import { Dashboards, ID, Narrative, Scenario } from '../models';
 import { MeiosisComponent, saveModel, setPage, t } from '../services';
 import { deepCopy, getRandomValue } from '../utils';
 
@@ -44,10 +37,8 @@ const ToggleIcon: FactoryComponent<{
 export const CategoryTable: MeiosisComponent<{
   catId: ID;
 }> = () => {
-  let multipleCategories: boolean;
-  let category: Category | undefined;
-  let comps: ScenarioComponent[] | undefined;
   let lockState = false;
+
   return {
     view: ({ attrs }) => {
       const {
@@ -62,10 +53,10 @@ export const CategoryTable: MeiosisComponent<{
       const {
         scenario: { categories = [], components: modelComps = [] },
       } = model;
-      multipleCategories = categories.length > 1;
-      category = categories.filter((c) => c.id === catId).shift();
+      const multipleCategories = categories.length > 1;
+      const category = categories.filter((c) => c.id === catId).shift();
       const componentIds = category && category.componentIds;
-      comps =
+      const comps =
         componentIds &&
         modelComps.filter((c) => componentIds.indexOf(c.id) >= 0);
 
