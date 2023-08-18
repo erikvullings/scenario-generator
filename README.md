@@ -5,6 +5,7 @@ Generate a threat scenario from a self-defined morphological box.
 ## TODO
 
 - [DONE] Landing page
+- Landing page with overview of saved narratives
 - [DONE] Morphological box page
 - [DONE] About page
 - [DONE] Editor for main model in Settings
@@ -13,7 +14,7 @@ Generate a threat scenario from a self-defined morphological box.
 - Kanban direction functionality
 - [DONE] Implement page for inconsistency settings
 - [DONE] Implement page for scenario generation
-- Implement page for showing scenarios
+- [DONE] Implement page for showing scenarios
 - [DONE] Save data model
 - [DONE] Load old data model
 - Implement OSM functionality
@@ -32,7 +33,7 @@ Generate a threat scenario from a self-defined morphological box.
 - [DONE] Gebruikte keuzes moeten zichtbaar worden in morfbox.
 - [DONE] in overzicht niet twee maar drie kleuren weergeven: vakje niet geselecteerd, minder dan instelbaar aantal geselecteerd, meer dan instelbaar aantal geselecteerd	Functie is om te zien welke nog aanvulling behoeven, ook als ze 1 keer voorkomen
 - [DONE] Scenariobeschrijving in tool rich text maken / koppelen Word bestand
-- Scenariobeschrijving in rich tekst, plaatjes en tabellen, koppeling naar plek opslag (url / folder locatie) – zo veel mogelijk vertrouwde omgeving
+- [DONE] Scenariobeschrijving in rich tekst, plaatjes en tabellen, koppeling naar plek opslag (url / folder locatie) – zo veel mogelijk vertrouwde omgeving
 - [DONE] admin interface / hidden elementen / flow aangeven: Wegwerken elementen die je maar zelden gebruikt in admin optie. Mogelijkheid om keuzemogelijkheden te verbergen als ze niet relevant zijn voor in een bepaalde context. Flow aangeven: voornamelijk lay-out zo maken dat volgorde logisch wordt.
 - landing page overzicht scenario's: Snel overzicht gebruikte/alle scenario’s. Sortering: alfabetisch, (evt op waarschijnlijkheid.) Per scenario stam plus ‘tagline’.
 - Rekening houden met inlezen oude scenario’s	Compatible of converteren
