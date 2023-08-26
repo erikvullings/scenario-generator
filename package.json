@@ -33,7 +33,7 @@
   "app": "src/index.html",
   "target": "web",
   "dependencies": {
-    "material-icons": "^1.13.9",
+    "material-icons": "^1.13.10",
     "materialize-css": "^1.0.0",
     "meiosis-setup": "^6.2.3",
     "mithril": "^2.2.2",
@@ -43,9 +43,9 @@
     "translate.js": "1.3.2"
   },
   "devDependencies": {
-    "@rspack/cli": "^0.2.10",
+    "@rspack/cli": "^0.2.12",
     "@types/materialize-css": "^1.0.11",
-    "@types/mithril": "^2.0.12",
+    "@types/mithril": "^2.0.13",
     "@types/quill": "^2.0.10",
     "dotenv-webpack": "^8.0.1",
     "rimraf": "^5.0.1",
