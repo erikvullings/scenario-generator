@@ -34,7 +34,7 @@ export const Layout: MeiosisComponent = () => ({
                   style: 'margin-top: 5px; margin-left: -5px;',
                 }),
                 m(
-                  '.title.show-on-med-and-up.black-text',
+                  '.title.show-on-med-and-up.black-text.truncate',
                   attrs.state.model?.scenario?.label
                 ),
               ]
@@ -50,7 +50,7 @@ export const Layout: MeiosisComponent = () => ({
               },
               m(Icon, {
                 iconName: 'menu',
-                className: 'hide-on-med-and-up black-text',
+                className: 'hide-on-large-and-up black-text',
                 style: 'margin-left: 5px;',
               })
             ),
