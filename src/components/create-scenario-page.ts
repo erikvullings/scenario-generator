@@ -425,7 +425,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               }),
               m(InputCheckbox, {
                 className: 'col s4 mt25',
-                initialValue: curNarrative.included,
+                checked: curNarrative.included,
                 label: t('INCLUDE_NARRATIVE'),
                 onchange: (n) => {
                   curNarrative.included = n;
