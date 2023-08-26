@@ -1,5 +1,5 @@
 import m from 'mithril';
-import 'material-icons/iconfont/material-icons.css';
+import 'material-icons/iconfont/filled.css';
 import 'materialize-css/dist/css/materialize.min.css';
 import './css/style.css';
 import 'quill/dist/quill.snow.css';
