@@ -764,3 +764,8 @@ ul.kanban > li {
   justify-content: right;
   align-items: flex-start;
 }
+.narratives {
+  border: solid #dbe2e0;
+  border-radius: 10px;
+  margin: 10px;
+}

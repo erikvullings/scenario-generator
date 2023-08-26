@@ -1,12 +1,7 @@
 import m, { FactoryComponent } from 'mithril';
 import { Dashboards, ID, Narrative, ScenarioComponent } from '../models';
 import { MeiosisComponent, setPage, t } from '../services';
-import {
-  Select,
-  ISelectOptions,
-  InputCheckbox,
-  TextInput,
-} from 'mithril-materialized';
+import { Select, ISelectOptions } from 'mithril-materialized';
 import { deepCopy } from 'mithril-ui-form';
 import Quill from 'quill';
 

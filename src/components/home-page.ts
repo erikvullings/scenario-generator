@@ -42,10 +42,32 @@ export const HomePage: MeiosisComponent = () => {
     view: ({ attrs }) => {
       const isCleared = false;
       const { model, language } = attrs.state;
+      const {
+        scenario: { narratives = [], components },
+      } = model;
 
+      console.log(narratives);
+      const selectedNarratives = narratives
+        .filter((n) => n.included)
+        .sort((a, b) => (a.label || '').localeCompare(b.label));
+      const lookup = components.reduce((acc, cur) => {
+        cur.values &&
+          cur.values.forEach((v) => {
+            acc[v.id] = v.label;
+          });
+        return acc;
+      }, {} as Record<string, string>);
       return [
         m('div', { style: 'padding-top: 1rem;position: relative;' }, [
-          m('img.responsive-img.center', { src: background }),
+          m(
+            '.row',
+            m(
+              '.col.s12',
+              m('img.responsive-img.center[alt=fountain pen]', {
+                src: background,
+              })
+            )
+          ),
           m('.buttons.center', { style: 'margin: 10px auto;' }, [
             [
               m(
@@ -206,6 +228,33 @@ export const HomePage: MeiosisComponent = () => {
             //   },
             // }),
           ]),
+          selectedNarratives.length > 0 &&
+            m(
+              '.row.narratives',
+              m(
+                '.col.s12',
+                selectedNarratives.map((n) =>
+                  m(
+                    'ul',
+                    m('li.narrative', [
+                      m('.title', n.label),
+                      m(
+                        'p',
+                        n.components &&
+                          components
+                            .map(
+                              (c) =>
+                                `${c.label}: ${n.components[c.id]
+                                  .map((id) => lookup[id])
+                                  .join(', ')}`
+                            )
+                            .join(', ') + '.'
+                      ),
+                    ])
+                  )
+                )
+              )
+            ),
           m(
             '.section.white',
             m('.row.container.center', [

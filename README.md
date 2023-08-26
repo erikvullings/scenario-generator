@@ -28,14 +28,14 @@ Generate a threat scenario from a self-defined morphological box.
 
 - eenvoudiger opslaan en inlezen + versie stamp toevoegen: “save” en “load” button, browse in folders, liefst onthouden laatste keuze
 - [DONE] genereer scenario's: slotje standaard open ipv dicht
-- [DONE] mogelijkheid creeren meerdere opties te selecteren binnen elke dreigingscategorie
-- [DONE] Handmatig toevoegen van extra keuzes naast evt automatisch gegenereerde keuze.
+- [DONE] mogelijkheid creëren meerdere opties te selecteren binnen elke dreigingscategorie
+- [DONE] Handmatig toevoegen van extra keuzes naast eventueel automatisch gegenereerde keuze.
 - [DONE] Gebruikte keuzes moeten zichtbaar worden in morfbox.
 - [DONE] in overzicht niet twee maar drie kleuren weergeven: vakje niet geselecteerd, minder dan instelbaar aantal geselecteerd, meer dan instelbaar aantal geselecteerd	Functie is om te zien welke nog aanvulling behoeven, ook als ze 1 keer voorkomen
 - [DONE] Scenariobeschrijving in tool rich text maken / koppelen Word bestand
 - [DONE] Scenariobeschrijving in rich tekst, plaatjes en tabellen, koppeling naar plek opslag (url / folder locatie) – zo veel mogelijk vertrouwde omgeving
 - [DONE] admin interface / hidden elementen / flow aangeven: Wegwerken elementen die je maar zelden gebruikt in admin optie. Mogelijkheid om keuzemogelijkheden te verbergen als ze niet relevant zijn voor in een bepaalde context. Flow aangeven: voornamelijk lay-out zo maken dat volgorde logisch wordt.
-- landing page overzicht scenario's: Snel overzicht gebruikte/alle scenario’s. Sortering: alfabetisch, (evt op waarschijnlijkheid.) Per scenario stam plus ‘tagline’.
+- [DONE] landing page overzicht scenario's: Snel overzicht gebruikte/alle scenario’s. Sortering: alfabetisch, (eventueel op waarschijnlijkheid.) Per scenario stam plus ‘tagline’.
 - Rekening houden met inlezen oude scenario’s	Compatible of converteren
 - [DONE] Export functies aanpassen aan update bovenstaande functies
 - Help functie bijwerken: In de applicatie zetten
