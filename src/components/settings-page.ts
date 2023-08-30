@@ -247,33 +247,47 @@ export const SettingsPage: MeiosisComponent = () => {
                       m('.row', [
                         m(
                           '.col.s12',
-                          m('table.responsive-table.highlight', [
-                            m(
-                              'thead',
-                              m('tr', [
-                                m('th', `${rowComp.label} \\ ${colComp.label}`),
-                                ...colComp.values.map((v) => m('th', v.label)),
-                              ]),
-                              rowComp.values.map((r) =>
+                          m(
+                            'table.responsive-table.highlight',
+                            {
+                              style: 'display: block;overflow-x: auto',
+                            },
+                            [
+                              m(
+                                'thead',
                                 m('tr', [
-                                  m('td', r.label),
-                                  ...colComp.values.map((c) =>
-                                    m(
-                                      'td',
-                                      m(InconsistencyCheckbox, {
-                                        rowId: r.id,
-                                        colId: c.id,
-                                        inconsistencies,
-                                        callback: async () =>
-                                          await saveModel(attrs, model),
-                                      })
-                                      // inconsistencies[key(r.id, c.id)] || 'NONE'
-                                    )
+                                  m(
+                                    'th',
+                                    `${rowComp.label} \\ ${colComp.label}`
+                                  ),
+                                  ...colComp.values.map((v) =>
+                                    m('th', v.label)
                                   ),
                                 ])
-                              )
-                            ),
-                          ])
+                              ),
+                              m(
+                                'tbody',
+                                rowComp.values.map((r) =>
+                                  m('tr', [
+                                    m('td', r.label),
+                                    ...colComp.values.map((c) =>
+                                      m(
+                                        'td',
+                                        m(InconsistencyCheckbox, {
+                                          rowId: r.id,
+                                          colId: c.id,
+                                          inconsistencies,
+                                          callback: async () =>
+                                            await saveModel(attrs, model),
+                                        })
+                                        // inconsistencies[key(r.id, c.id)] || 'NONE'
+                                      )
+                                    ),
+                                  ])
+                                )
+                              ),
+                            ]
+                          )
                         ),
                       ])
                     ),
