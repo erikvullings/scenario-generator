@@ -55,7 +55,7 @@ export const Layout: MeiosisComponent = () => ({
               })
             ),
             m(
-              'ul#slide-out.sidenav.hide-on-med-and-up',
+              'ul#slide-out.sidenav.hide-on-large-and-up',
               {
                 oncreate: () => {
                   const elems = document.querySelectorAll('.sidenav');
