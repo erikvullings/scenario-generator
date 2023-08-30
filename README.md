@@ -5,7 +5,7 @@ Generate a threat scenario from a self-defined morphological box.
 ## TODO
 
 - [DONE] Landing page
-- Landing page with overview of saved narratives
+- [DONE] Landing page with overview of saved narratives
 - [DONE] Morphological box page
 - [DONE] About page
 - [DONE] Editor for main model in Settings

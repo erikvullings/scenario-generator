@@ -1,5 +1,12 @@
 import m from 'mithril';
-import { Button, Icon, ModalPanel, padLeft } from 'mithril-materialized';
+import {
+  Button,
+  Icon,
+  InputCheckbox,
+  ModalPanel,
+  RadioButtons,
+  padLeft,
+} from 'mithril-materialized';
 import background from '../assets/background.webp';
 import DutchFlag from '../assets/flag-nl.png';
 import EnglishFlag from '../assets/flag-en.png';
@@ -12,13 +19,15 @@ import {
   setPage,
   t,
 } from '../services';
-import { Dashboards, DataModel, OldDataModel, defaultModel } from '../models';
+import { Dashboards, DataModel, OldDataModel, defaultModels } from '../models';
 import { convertFromOld, formatDate } from '../utils';
 // import { padLeft } from '';
 
 export const HomePage: MeiosisComponent = () => {
   const readerAvailable =
     window.File && window.FileReader && window.FileList && window.Blob;
+  let selectedId = 0;
+  let removeAllKeyValues = false;
 
   return {
     oninit: ({ attrs }) => {
@@ -289,14 +298,41 @@ export const HomePage: MeiosisComponent = () => {
           ),
           m(ModalPanel, {
             id: 'clearAll',
-            title: t('CLEAR_MODEL', 'title'),
-            description: t('CLEAR_MODEL', 'description'),
+            title: t('NEW_MODEL', 'title'),
+            description: m('.row', [
+              m('.col.s12', [t('NEW_MODEL', 'description')]),
+              m('.col.s12', [
+                m(
+                  '.row',
+                  m(RadioButtons, {
+                    label: t('NEW_MODEL', 'choose'),
+                    checkedId: 1,
+                    options: defaultModels.map((_, i) => ({
+                      id: i + 1,
+                      label: `<strong>${t('MODEL_NAMES', i)}: </strong>${t(
+                        'MODEL_DESC',
+                        i
+                      )}`,
+                    })),
+                    onchange: (i) => (selectedId = (i as number) - 1),
+                  })
+                ),
+                m(
+                  '.row',
+                  m(InputCheckbox, {
+                    label: t('NEW_MODEL', 'remove'),
+                    checked: removeAllKeyValues,
+                    onchange: (v) => (removeAllKeyValues = v),
+                  })
+                ),
+              ]),
+            ]),
             buttons: [
               {
                 label: t('YES'),
                 iconName: 'delete',
                 onclick: () => {
-                  saveModel(attrs, defaultModel);
+                  saveModel(attrs, defaultModels[selectedId]);
                   routingSvc.switchTo(Dashboards.HOME);
                 },
               },

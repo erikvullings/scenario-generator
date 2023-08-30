@@ -56,7 +56,7 @@ export const saveModel = async (cell: MeiosisCell<State>, model: DataModel) => {
   cell.update({ model: () => model });
 };
 
-export const mutateScenarioComponent = async (
+export const mutateScenarioComponent = (
   cell: MeiosisCell<State>,
   scenarioComponentId: ID,
   item: ContextualItem,
@@ -78,7 +78,7 @@ export const mutateScenarioComponent = async (
       : mutation === 'delete'
       ? values.filter((c) => c.id !== item.id)
       : [...values, item];
-  await saveModel(cell, model);
+  saveModel(cell, model);
 };
 
 export const setLanguage = async (locale = i18n.currentLocale) => {

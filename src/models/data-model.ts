@@ -323,6 +323,15 @@ export const defaultModel = {
   },
 } as DataModel;
 
+/**
+ * Set of default models that can be used to create a new scenario
+ *
+ * When adding a new model, also provide a translation for them:
+ *    MODEL_NAME, MODEL_DESC
+ * where the index of the model should match.
+ */
+export const defaultModels: DataModel[] = [defaultModel];
+
 export type ID = string;
 
 export type User = {

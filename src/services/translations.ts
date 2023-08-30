@@ -65,9 +65,12 @@ export const messages = {
     description:
       'Are you certain you want to delete this {item}. There is no turning back?',
   },
-  CLEAR_MODEL: {
-    title: 'Do you really want to delete everything?',
-    description: 'Are you sure that you want to delete your model?',
+  NEW_MODEL: {
+    title: 'Choose a new model and erase everything',
+    description:
+      'Are you sure that you want to delete your existing model and start one of the available new ones? There is no way back.',
+    choose: 'Choose your new model',
+    remove: 'Remove all key values',
   },
   INCONSISTENCIES: {
     title: 'Edit inconsistencies',
@@ -152,6 +155,12 @@ export const messages = {
     ACCESS2: 'Means of access',
     MEANS2ACCESS: 'Means to access',
   },
+  MODEL_NAMES: {
+    0: 'Simple model (in English)',
+  },
+  MODEL_DESC: {
+    0: 'A scenario model with a threat and a context category.',
+  },
 };
 
 export const messagesNL: typeof messages = {
@@ -215,10 +224,12 @@ export const messagesNL: typeof messages = {
     description:
       'Weet u zeker dat u de {item} wilt verwijderen? Dit kan niet ongedaan gemaakt worden.',
   },
-  CLEAR_MODEL: {
-    title: 'Alles wissen',
+  NEW_MODEL: {
+    title: 'Kies een nieuw model en wis alles',
     description:
-      'Weet u zeker dat u dit model wilt wissen, en met een standaard model wilt beginnen? Er is geen weg terug.',
+      'Weet u zeker dat u het huidige model wilt wissen, en met één van onderstaande modellen wilt verdergaan? Er is geen weg terug.',
+    choose: 'Kies uw nieuwe model',
+    remove: 'Verwijder alle reeds ingevulde waarden',
   },
   INCONSISTENCIES: {
     title: 'Bewerk inconsistencies',
@@ -302,6 +313,12 @@ export const messagesNL: typeof messages = {
     MEANS4: 'Middel tbv toegang',
     ACCESS2: 'Wijze van binnendringen',
     MEANS2ACCESS: 'Middel om binnen te dringen',
+  },
+  MODEL_NAMES: {
+    0: 'Simpel model (in Engels)',
+  },
+  MODEL_DESC: {
+    0: 'Een scenario model met een dreigings- en contextcategorie.',
   },
 };
 
