@@ -55,57 +55,56 @@ const BoxItem: MeiosisComponent<{
     },
     view: ({ attrs }) => {
       const { item, id, color } = attrs;
-      return [
-        m(
-          'li.kanban-item.card.widget',
-          {
-            style: `background-color: ${color[0]}; color: ${color[1]}`,
-          },
-          [
-            m('.card-content', [
-              m('span.card-title', item.label),
-              item.desc && m('span.card-desc', item.desc),
-              m(FlatButton, {
-                className: 'top-right widget-link',
-                iconName: 'edit',
-                iconClass: 'no-gutter',
-                modalId: item.id,
-              }),
-            ]),
-          ]
-        ),
-        m(ModalPanel, {
-          id: item.id,
-          title: t('EDIT_COMPONENT'),
-          fixedFooter: true,
-          description: m(
-            '.row',
-            m(LayoutForm, {
-              form: contextAwareForm,
-              obj,
-              i18n: i18n.i18n,
-            } as FormAttributes<ContextualItem>)
-          ),
-          // options: { opacity: 0.7 },
-          buttons: [
-            {
-              label: t('CANCEL'),
-            },
-            {
-              label: t('DELETE'),
-              onclick: () => {
-                mutateScenarioComponent(attrs, id, obj, 'delete');
+      return m(
+        'li.kanban-item.card.widget',
+        {
+          key: id,
+          style: `background-color: ${color[0]}; color: ${color[1]}`,
+        },
+        [
+          m('.card-content', [
+            m('span.card-title', item.label),
+            item.desc && m('span.card-desc', item.desc),
+            m(FlatButton, {
+              className: 'top-right widget-link',
+              iconName: 'edit',
+              iconClass: 'no-gutter',
+              modalId: item.id,
+            }),
+          ]),
+          m(ModalPanel, {
+            id: item.id,
+            title: t('EDIT_COMPONENT'),
+            fixedFooter: true,
+            description: m(
+              '.row',
+              m(LayoutForm, {
+                form: contextAwareForm,
+                obj,
+                i18n: i18n.i18n,
+              } as FormAttributes<ContextualItem>)
+            ),
+            // options: { opacity: 0.7 },
+            buttons: [
+              {
+                label: t('CANCEL'),
               },
-            },
-            {
-              label: t('OK'),
-              onclick: () => {
-                mutateScenarioComponent(attrs, id, obj, 'update');
+              {
+                label: t('DELETE'),
+                onclick: () => {
+                  mutateScenarioComponent(attrs, id, obj, 'delete');
+                },
               },
-            },
-          ],
-        }),
-      ];
+              {
+                label: t('OK'),
+                onclick: () => {
+                  mutateScenarioComponent(attrs, id, obj, 'update');
+                },
+              },
+            ],
+          }),
+        ]
+      );
     },
   };
 };
@@ -120,17 +119,15 @@ const BoxHeader: MeiosisComponent<{
       const { sc, form } = attrs;
       const { id } = sc;
 
-      return [
-        m('li.kanban-header.widget', [
-          m('.span.title.truncate.left.ml10', sc.label),
-          m(FlatButton, {
-            className: 'widget-link',
-            iconName: 'add',
-            iconClass: 'no-gutter',
-            modalId: sc.id,
-            i18n: i18n.i18n,
-          }),
-        ]),
+      return m('li.kanban-header.widget', { key: 'header' }, [
+        m('.span.title.truncate.left.ml10', sc.label),
+        m(FlatButton, {
+          className: 'widget-link',
+          iconName: 'add',
+          iconClass: 'no-gutter',
+          modalId: sc.id,
+          i18n: i18n.i18n,
+        }),
         m(ModalPanel, {
           id: sc.id,
           title: t('ADD_COMPONENT'),
@@ -154,7 +151,7 @@ const BoxHeader: MeiosisComponent<{
             },
           ],
         }),
-      ];
+      ]);
     },
   };
 };
@@ -168,12 +165,13 @@ const BoxRow: MeiosisComponent<{
     view: ({ attrs }) => {
       const { sc, form, compColor } = attrs;
 
-      return m('li', [
+      return m('li', { key: sc.id }, [
         m(
           'ul.kanban-row',
           m(BoxHeader, { ...attrs, sc, form }),
           sc.values.map((c) =>
             m(BoxItem, {
+              key: c.id,
               ...attrs,
               id: sc.id,
               contexts: sc.contexts,
@@ -199,10 +197,9 @@ const BoxView: MeiosisComponent<{
         form,
         categoryId,
         compColor,
-        state: {
-          model: { scenario },
-        },
+        state: { model },
       } = attrs;
+      const { scenario } = model;
       const { categories, components } = scenario;
       const category = categories[categoryId];
       const scs = components.filter(
