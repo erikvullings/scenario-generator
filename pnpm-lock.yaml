@@ -41,8 +41,8 @@ devDependencies:
     specifier: ^2.0.14
     version: 2.0.14
   '@types/quill':
-    specifier: ^2.0.10
-    version: 2.0.10
+    specifier: ^2.0.11
+    version: 2.0.11
   dotenv-webpack:
     specifier: ^8.0.1
     version: 8.0.1(webpack@5.88.2)
@@ -549,8 +549,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
-  /@types/quill@2.0.10:
-    resolution: {integrity: sha512-L6OHONEj2v4NRbWQOsn7j1N0SyzhRR3M4g1M6j/uuIwIsIW2ShWHhwbqNvH8hSmVktzqu0lITfdnqVOQ4qkrhA==}
+  /@types/quill@2.0.11:
+    resolution: {integrity: sha512-W4NEBGBGCNVinOjThF6hnyxv0gBsDVEcJPMwEQbkjdLad/sb4+cSm1c/r6ceWbLcUFrQTMVhCRNz6LyxRbH8gQ==}
     dependencies:
       parchment: 1.1.4
       quill-delta: 4.2.2
