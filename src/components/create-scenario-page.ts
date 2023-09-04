@@ -119,11 +119,6 @@ export const CategoryTable: MeiosisComponent<{
               } as ISelectOptions<string>),
             ],
             m('.col.s1.icons', [
-              c.manual &&
-                m(Icon, {
-                  iconName: 'front_hand',
-                  className: 'grey-text',
-                }),
               m(ToggleIcon, {
                 on: 'visibility',
                 off: 'visibility_off',
