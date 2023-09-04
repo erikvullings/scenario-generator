@@ -18,7 +18,12 @@ import {
   moveScenarioComponent,
 } from '../services';
 import { FlatButton, ModalPanel, Tabs } from 'mithril-materialized';
-import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
+import {
+  FormAttributes,
+  LayoutForm,
+  SlimdownView,
+  UIForm,
+} from 'mithril-ui-form';
 import { contrastingColor, generateNumbers } from '../utils';
 
 const BoxItem: MeiosisComponent<{
@@ -60,7 +65,7 @@ const BoxItem: MeiosisComponent<{
         'li.kanban-item.card.widget[draggable=true]',
         {
           key: id,
-          id: item.id,
+          id: `ki_${item.id}`,
           style: `background-color: ${color[0]}; color: ${color[1]}`,
           ondragstart: (ev: DragEvent) => {
             ev.dataTransfer?.setData(id, JSON.stringify([id, item.id]));
@@ -87,8 +92,27 @@ const BoxItem: MeiosisComponent<{
         },
         [
           m('.card-content', [
-            m('span.card-title', item.label),
-            item.desc && m('span.card-desc', item.desc),
+            m(
+              'span.card-title',
+              {
+                onmouseenter: item.desc
+                  ? () => {
+                      attrs.update({
+                        activeTooltip: item.desc,
+                      });
+                    }
+                  : undefined,
+                onmouseleave: item.desc
+                  ? () => {
+                      attrs.update({
+                        activeTooltip: undefined,
+                      });
+                    }
+                  : undefined,
+              },
+              item.label
+            ),
+            // item.desc && m('span.card-desc', item.desc),
             m(FlatButton, {
               className: 'top-right widget-link',
               iconName: 'edit',
@@ -326,6 +350,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
     },
     view: ({ attrs }) => {
       const {
+        activeTooltip,
         model: { scenario },
       } = attrs.state;
       const { categories, thresholdColors = [] } = scenario;
@@ -374,8 +399,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
       }
 
       return [
-        m(
-          '.create-box-page',
+        m('.create-box-page', [
           categories.length > 1
             ? m(Tabs, {
                 tabs: categories.map((c, categoryId) => ({
@@ -391,8 +415,16 @@ export const CreateBoxPage: MeiosisComponent = () => {
               })
             : categories.length === 1
             ? m(BoxView, { ...attrs, compColor, categoryId: 0, form })
-            : 'FIRST DEFINE SOME COMPONENT CATEGORIES'
-        ),
+            : 'FIRST DEFINE SOME COMPONENT CATEGORIES',
+          activeTooltip &&
+            m(
+              '.popupContainer',
+              m(
+                '.popupContent.center',
+                m(SlimdownView, { md: activeTooltip, removeParagraphs: true })
+              )
+            ),
+        ]),
       ];
     },
   };

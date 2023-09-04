@@ -20,6 +20,7 @@ export type State = {
   model: DataModel;
   title: string;
   language: string;
+  activeTooltip?: string;
   /** Current narrative that we are working on */
   curNarrative?: Narrative;
   /** Components that have been excluded from the narrative */

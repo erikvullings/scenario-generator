@@ -769,3 +769,18 @@ ul.kanban > li {
   border-radius: 10px;
   margin: 10px;
 }
+
+.popupContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fcffa5;
+  font-size: 2rem;
+  box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.3);
+  /* display: none; Hide the popup by default */
+}
+
+.popupContainer > .popupContent {
+  padding: 20px;
+}
