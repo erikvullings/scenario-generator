@@ -13,7 +13,6 @@ export const messages = {
   SHOW_SCENARIO: { TITLE: 'Show', ROUTE: '/home' },
   DOWNLOAD: 'Download',
   UPLOAD: 'Upload',
-  CLEAR: 'Clear',
   CANCEL: 'Cancel',
   DELETE: 'Delete',
   YES: 'Yes',
@@ -66,6 +65,7 @@ export const messages = {
       'Are you certain you want to delete this {item}. There is no turning back?',
   },
   NEW_MODEL: {
+    btn: 'New model',
     title: 'Choose a new model and erase everything',
     description:
       'Are you sure that you want to delete your existing model and start one of the available new ones? There is no way back.',
@@ -172,7 +172,6 @@ export const messagesNL: typeof messages = {
   SHOW_SCENARIO: { TITLE: 'Toon', ROUTE: '/toon' },
   DOWNLOAD: 'Downloaden',
   UPLOAD: 'Uploaden',
-  CLEAR: 'Wis',
   CANCEL: 'Afbreken',
   DELETE: 'Verwijderen',
   YES: 'Ja',
@@ -225,6 +224,7 @@ export const messagesNL: typeof messages = {
       'Weet u zeker dat u de {item} wilt verwijderen? Dit kan niet ongedaan gemaakt worden.',
   },
   NEW_MODEL: {
+    btn: 'Nieuw model',
     title: 'Kies een nieuw model en wis alles',
     description:
       'Weet u zeker dat u het huidige model wilt wissen, en met één van onderstaande modellen wilt verdergaan? Er is geen weg terug.',

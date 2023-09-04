@@ -116,7 +116,7 @@ export const HomePage: MeiosisComponent = () => {
               iconName: 'clear',
               disabled: isCleared,
               className: 'btn-large',
-              label: t('CLEAR'),
+              label: t('NEW_MODEL', 'btn'),
               modalId: 'clearAll',
             }),
             m('a#downloadAnchorElem', { style: 'display:none' }),
