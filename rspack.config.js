@@ -1,6 +1,6 @@
 const path = require('path');
 const devMode = process.env.NODE_ENV === 'development';
-const outputPath = path.resolve(__dirname, devMode ? 'dist' : '../../docs');
+const outputPath = path.resolve(__dirname, devMode ? 'dist' : './docs');
 
 console.log(`Working in ${devMode ? 'development' : 'production'} mode.`);
 
