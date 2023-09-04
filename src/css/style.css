@@ -642,7 +642,7 @@ a.waves-effect.waves-teal.btn-flat.selected {
   list-style: none;
 }
 .kanban-row {
-  background-color: lightblue;
+  /* background-color: lightblue; */
   display: flex;
   flex-flow: column nowrap;
   padding: 0;
@@ -742,8 +742,8 @@ ul.kanban > li {
 }
 .show-scenario,
 .create-scenario {
-  margin-top: 1rem;
-  height: 85vh;
+  padding-top: 1rem;
+  height: calc(100vh - 84px);
 }
 .create-scenario .row {
   margin-bottom: 0;
