@@ -15,6 +15,7 @@ import {
   setPage,
   i18n,
   t,
+  moveScenarioComponent,
 } from '../services';
 import { FlatButton, ModalPanel, Tabs } from 'mithril-materialized';
 import { FormAttributes, LayoutForm, UIForm } from 'mithril-ui-form';
@@ -56,10 +57,33 @@ const BoxItem: MeiosisComponent<{
     view: ({ attrs }) => {
       const { item, id, color } = attrs;
       return m(
-        'li.kanban-item.card.widget',
+        'li.kanban-item.card.widget[draggable=true]',
         {
           key: id,
+          id: item.id,
           style: `background-color: ${color[0]}; color: ${color[1]}`,
+          ondragstart: (ev: DragEvent) => {
+            ev.dataTransfer?.setData(id, JSON.stringify([id, item.id]));
+          },
+          ondragover: (ev: DragEvent) => {
+            const allowed = ev.dataTransfer?.types.includes(id.toLowerCase());
+            if (allowed) ev.preventDefault();
+          },
+          ondrop: (ev: DragEvent) => {
+            ev.preventDefault();
+            const data = ev.dataTransfer?.getData(id);
+            if (!data) return;
+            const [_, itemId] = JSON.parse(data) as [string, string];
+            const dropTarget = document.getElementById(item.id);
+            if (!itemId || !dropTarget) return;
+            console.log(ev);
+            console.log(itemId);
+            if (!dropTarget) return;
+            const dropY = ev.clientY - dropTarget.getBoundingClientRect().top;
+            const dropHeight = dropTarget.clientHeight;
+            const moveBefore = dropY <= dropHeight / 2;
+            moveScenarioComponent(attrs, id, itemId, item.id, moveBefore);
+          },
         },
         [
           m('.card-content', [

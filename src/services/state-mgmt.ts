@@ -81,6 +81,46 @@ export const mutateScenarioComponent = (
   saveModel(cell, model);
 };
 
+/** Move the position of a scenario component before or after another scenario component */
+export const moveScenarioComponent = (
+  cell: MeiosisCell<State>,
+  componentId: ID,
+  moveId: ID,
+  dropId: ID,
+  moveBefore: boolean
+) => {
+  const { model } = cell.state;
+  const {
+    scenario: { components },
+  } = model;
+  const comp = components.filter((c) => c.id === componentId).shift();
+  if (!comp) {
+    console.error('Scenario component not found!');
+    return;
+  }
+  const { values } = comp;
+  const itemToMove = values.find((item) => item.id === moveId);
+  if (!itemToMove) return;
+
+  comp.values = values
+    .filter((i) => i.id !== moveId)
+    .reduce((acc, cur) => {
+      if (cur.id === dropId) {
+        if (moveBefore) {
+          acc.push(itemToMove);
+          acc.push(cur);
+        } else {
+          acc.push(cur);
+          acc.push(itemToMove);
+        }
+      } else {
+        acc.push(cur);
+      }
+      return acc;
+    }, [] as ContextualItem[]);
+  saveModel(cell, model);
+};
+
 export const setLanguage = async (locale = i18n.currentLocale) => {
   localStorage.setItem('SG_LANGUAGE', locale);
   await i18n.loadAndSetLocale(locale);
