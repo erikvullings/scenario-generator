@@ -152,7 +152,7 @@ export type ScenarioComponent = Item & {
 /** Default threshold colors */
 export const thresholdColors = [
   { threshold: 0, color: '#ddeced' },
-  { threshold: 1, color: 'rgb(255, 120, 0)' },
+  { threshold: 1, color: '#FF7800' },
   { threshold: 2, color: '#ffff00' },
   { threshold: 3, color: '#ff0000' },
 ];
