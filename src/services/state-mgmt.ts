@@ -51,12 +51,27 @@ export const changePage = (
   cell.update({ page });
 };
 
-export const saveModel = async (cell: MeiosisCell<State>, model: DataModel) => {
+export const saveModel = async (
+  cell: MeiosisCell<State>,
+  model: DataModel,
+  reset = false
+) => {
   localStorage.setItem(SAVED, 'false');
   model.lastUpdate = Date.now();
   await ldb.set(MODEL_KEY, JSON.stringify(model));
   // console.log(JSON.stringify(model, null, 2));
-  cell.update({ model: () => model });
+  if (reset) {
+    cell.update({
+      model: () => model,
+      activeTooltip: '',
+      title: model.scenario.label,
+      curNarrative: () => undefined,
+      excludedComps: () => ({}),
+      lockedComps: () => ({}),
+    });
+  } else {
+    cell.update({ model: () => model });
+  }
 };
 
 export const mutateScenarioComponent = (
