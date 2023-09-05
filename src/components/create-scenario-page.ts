@@ -68,19 +68,19 @@ export const CategoryTable: MeiosisComponent<{
         m('.scenario-table.row', [
           m('.col.s11', multipleCategories && m('h5', category.label)),
           m('.col.s1.icons', [
-            m(ToggleIcon, {
-              on: 'visibility',
-              off: 'visibility_off',
-              value: true,
-              callback: () => {
-                attrs.update({
-                  excludedComps: (e = {}) => {
-                    category?.componentIds.forEach((id) => delete e[id]);
-                    return e;
-                  },
-                });
-              },
-            }),
+            // m(ToggleIcon, {
+            //   on: 'visibility',
+            //   off: 'visibility_off',
+            //   value: true,
+            //   callback: () => {
+            //     attrs.update({
+            //       excludedComps: (e = {}) => {
+            //         category?.componentIds.forEach((id) => delete e[id]);
+            //         return e;
+            //       },
+            //     });
+            //   },
+            // }),
             m(ToggleIcon, {
               on: 'lock_open',
               off: 'lock',
@@ -119,20 +119,20 @@ export const CategoryTable: MeiosisComponent<{
               } as ISelectOptions<string>),
             ],
             m('.col.s1.icons', [
-              m(ToggleIcon, {
-                on: 'visibility',
-                off: 'visibility_off',
-                disabled: c.manual,
-                value: excludedComps[c.id] ? false : true,
-                callback: (v) => {
-                  attrs.update({
-                    excludedComps: (e = {}) => {
-                      e[c.id] = !v;
-                      return e;
-                    },
-                  });
-                },
-              }),
+              // m(ToggleIcon, {
+              //   on: 'visibility',
+              //   off: 'visibility_off',
+              //   disabled: c.manual,
+              //   value: excludedComps[c.id] ? false : true,
+              //   callback: (v) => {
+              //     attrs.update({
+              //       excludedComps: (e = {}) => {
+              //         e[c.id] = !v;
+              //         return e;
+              //       },
+              //     });
+              //   },
+              // }),
               m(ToggleIcon, {
                 on: 'lock_open',
                 off: 'lock',
@@ -236,6 +236,12 @@ export const CreateScenarioPage: MeiosisComponent = () => {
         state: { model, curNarrative = {} as Narrative, lockedComps = {} },
       } = attrs;
       const { categories = [] } = model.scenario;
+
+      const narratives =
+        model.scenario &&
+        model.scenario.narratives &&
+        model.scenario.narratives.filter((n) => n.included);
+
       return m('.create-scenario.row', [
         m('.col.s12', [
           m(FlatButton, {
@@ -271,6 +277,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
             onclick: () => {
               editor.setContents([] as any);
               attrs.update({
+                lockedComps: () => ({}),
                 curNarrative: () =>
                   ({ included: false, components: {} } as Narrative),
               });
@@ -284,6 +291,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               !curNarrative.components ||
               Object.keys(curNarrative.components).length === 0,
             onclick: () => {
+              if (!curNarrative.id) curNarrative.id = uniqueId();
               if (!model.scenario.narratives) {
                 curNarrative.saved = true;
                 model.scenario.narratives = [curNarrative];
@@ -333,25 +341,27 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               ],
             }),
           ],
-          model.scenario &&
-            model.scenario.narratives &&
-            model.scenario.narratives.length > 0 &&
+          narratives &&
             m(Select, {
               className: 'right mb0',
               label: t('SELECT_NARRATIVE'),
               checkedId: curNarrative.saved ? curNarrative.id : undefined,
               placeholder: t('i18n', 'pickOne'),
-              options: model.scenario.narratives,
+              options: narratives,
               onchange: (v) => {
                 if (v && v.length > 0) {
-                  const newNarrative = model.scenario.narratives
+                  const newNarrative = narratives
                     .filter((n) => n.id === v[0])
                     .shift();
+                  console.log(v[0]);
+                  console.log(JSON.stringify(narratives, null, 2));
+                  console.log(JSON.stringify(newNarrative, null, 2));
                   if (newNarrative) {
                     editor.setContents(
                       newNarrative.desc ? JSON.parse(newNarrative.desc) : []
                     );
                   }
+                  // if (newNarrative) newNarrative.included = true;
                   attrs.update({
                     curNarrative: () => deepCopy(newNarrative),
                     lockedComps: () =>
