@@ -1,10 +1,11 @@
-import m from 'mithril';
+import m, { FactoryComponent } from 'mithril';
 import {
   Button,
   Icon,
   InputCheckbox,
   ModalPanel,
   RadioButtons,
+  Tabs,
   padLeft,
 } from 'mithril-materialized';
 import background from '../assets/background.webp';
@@ -19,9 +20,61 @@ import {
   setPage,
   t,
 } from '../services';
-import { Dashboards, DataModel, OldDataModel, defaultModels } from '../models';
+import {
+  Dashboards,
+  DataModel,
+  Narrative,
+  OldDataModel,
+  ScenarioComponent,
+  defaultModels,
+} from '../models';
 import { SAVED, convertFromOld, formatDate } from '../utils';
 // import { padLeft } from '';
+
+const TableView: FactoryComponent<{
+  narratives: Narrative[];
+  components: ScenarioComponent[];
+}> = () => {
+  return {
+    view: ({ attrs: { components, narratives } }) => {
+      const lookup = components.reduce((acc, cur) => {
+        cur.values &&
+          cur.values.forEach((v) => {
+            acc[v.id] = v.label;
+          });
+        return acc;
+      }, {} as Record<string, string>);
+
+      return m('table.responsive-table.highlight', [
+        m(
+          'thead',
+          m(
+            'tr',
+            m('th', t('NAME')),
+            components.map((c) => m('th', c.label))
+          )
+        ),
+        m(
+          'tbody',
+          narratives.map((n) =>
+            m(
+              'tr',
+              m('td', n.label),
+              components.map((c) =>
+                m(
+                  'td',
+                  m.trust(
+                    n.components[c.id].map((id) => lookup[id]).join(',<br/>')
+                  )
+                )
+              )
+            )
+          )
+        ),
+      ]);
+    },
+  };
+};
 
 export const HomePage: MeiosisComponent = () => {
   const readerAvailable =
@@ -52,20 +105,13 @@ export const HomePage: MeiosisComponent = () => {
       const isCleared = false;
       const { model, language } = attrs.state;
       const {
-        scenario: { narratives = [], components },
+        scenario: { narratives = [], components, categories },
       } = model;
 
-      console.log(narratives);
       const selectedNarratives = narratives
         .filter((n) => n.included)
         .sort((a, b) => (a.label || '').localeCompare(b.label));
-      const lookup = components.reduce((acc, cur) => {
-        cur.values &&
-          cur.values.forEach((v) => {
-            acc[v.id] = v.label;
-          });
-        return acc;
-      }, {} as Record<string, string>);
+
       return [
         m('div', { style: 'padding-top: 1rem;position: relative;' }, [
           m(
@@ -156,7 +202,7 @@ export const HomePage: MeiosisComponent = () => {
               m(Button, {
                 iconName: 'upload',
                 className: 'btn-large',
-                label: 'Upload',
+                label: t('UPLOAD'),
                 onclick: () => {
                   const fileInput = document.getElementById(
                     'selectFiles'
@@ -184,7 +230,7 @@ export const HomePage: MeiosisComponent = () => {
                           const dataModel = json.version
                             ? (json as DataModel)
                             : convertFromOld(json as OldDataModel);
-                          saveModel(attrs, dataModel);
+                          saveModel(attrs, dataModel, true);
                           changePage(attrs, Dashboards.DEFINE_BOX);
                         }
                         // json &&
@@ -239,31 +285,33 @@ export const HomePage: MeiosisComponent = () => {
             // }),
           ]),
           selectedNarratives.length > 0 &&
+            categories.length > 0 &&
             m(
-              '.row.narratives',
-              m(
-                '.col.s12',
-                selectedNarratives.map((n) =>
-                  m(
-                    'ul',
-                    m('li.narrative', [
-                      m('.title', n.label),
-                      m(
-                        'p',
-                        n.components &&
-                          components
-                            .map(
-                              (c) =>
-                                `${c.label}: ${n.components[c.id]
-                                  .map((id) => lookup[id])
-                                  .join(', ')}`
-                            )
-                            .join(', ') + '.'
-                      ),
-                    ])
-                  )
-                )
-              )
+              '.row',
+              m('.col.s12', [
+                m('h4', t('SAVED_NARRATIVES')),
+                categories.length > 1
+                  ? m(Tabs, {
+                      tabs: categories.map((c) => ({
+                        title: c.label,
+                        vnode: m(TableView, {
+                          narratives: selectedNarratives,
+                          components: components.filter((comp) =>
+                            c.componentIds.includes(comp.id)
+                          ),
+                        }),
+                      })),
+                    })
+                  : m(
+                      '.row.narratives',
+                      m(TableView, {
+                        narratives: selectedNarratives,
+                        components: components.filter((comp) =>
+                          categories[0].componentIds.includes(comp.id)
+                        ),
+                      })
+                    ),
+              ])
             ),
           m(
             '.section.white',
@@ -333,7 +381,7 @@ export const HomePage: MeiosisComponent = () => {
                 label: t('YES'),
                 iconName: 'delete',
                 onclick: () => {
-                  saveModel(attrs, defaultModels[selectedId]);
+                  saveModel(attrs, defaultModels[selectedId], true);
                   routingSvc.switchTo(Dashboards.HOME);
                 },
               },
