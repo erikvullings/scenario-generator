@@ -357,19 +357,21 @@ export const CreateBoxPage: MeiosisComponent = () => {
 
       if (compColor || Object.keys(compColor).length < thresholdColors.length) {
         const { narratives = [] } = scenario;
-        const componentUsage = narratives.reduce((acc, cur) => {
-          const { components } = cur;
-          Object.keys(components).forEach((c) => {
-            for (const compValue of components[c]) {
-              if (acc[compValue]) {
-                acc[compValue]++;
-              } else {
-                acc[compValue] = 1;
+        const componentUsage = narratives
+          .filter((n) => n.included)
+          .reduce((acc, cur) => {
+            const { components } = cur;
+            Object.keys(components).forEach((c) => {
+              for (const compValue of components[c]) {
+                if (acc[compValue]) {
+                  acc[compValue]++;
+                } else {
+                  acc[compValue] = 1;
+                }
               }
-            }
-          });
-          return acc;
-        }, {} as { [key: ID]: number });
+            });
+            return acc;
+          }, {} as { [key: ID]: number });
         const count2color: Color[] = generateNumbers(
           0,
           Math.max(...thresholdColors.map((c) => c.threshold))
