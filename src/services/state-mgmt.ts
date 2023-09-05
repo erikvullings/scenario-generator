@@ -11,6 +11,7 @@ import {
 } from '../models';
 import { ldb } from '../utils/local-ldb';
 import { MeiosisCell, Update } from 'meiosis-setup/types';
+import { LANGUAGE, SAVED } from '../utils';
 
 const MODEL_KEY = 'SG_MODEL';
 const SCENARIO_TITLE = 'SG_JOURNAL_TITLE';
@@ -51,6 +52,7 @@ export const changePage = (
 };
 
 export const saveModel = async (cell: MeiosisCell<State>, model: DataModel) => {
+  localStorage.setItem(SAVED, 'false');
   model.lastUpdate = Date.now();
   await ldb.set(MODEL_KEY, JSON.stringify(model));
   // console.log(JSON.stringify(model, null, 2));
@@ -123,7 +125,7 @@ export const moveScenarioComponent = (
 };
 
 export const setLanguage = async (locale = i18n.currentLocale) => {
-  localStorage.setItem('SG_LANGUAGE', locale);
+  localStorage.setItem(LANGUAGE, locale);
   await i18n.loadAndSetLocale(locale);
 };
 /* END OF Actions */

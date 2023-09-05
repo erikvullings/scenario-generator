@@ -10,9 +10,9 @@ export const messages = {
   DEFINE_BOX: { TITLE: 'Define', ROUTE: '/define' },
   SETTINGS: { TITLE: 'Settings', ROUTE: '/settings' },
   CREATE_SCENARIO: { TITLE: 'Create', ROUTE: '/create' },
-  SHOW_SCENARIO: { TITLE: 'Show', ROUTE: '/home' },
-  DOWNLOAD: 'Download',
-  UPLOAD: 'Upload',
+  SHOW_SCENARIO: { TITLE: 'Show', ROUTE: '/show' },
+  DOWNLOAD: 'Save scenario file',
+  UPLOAD: 'Load scenario file',
   CANCEL: 'Cancel',
   DELETE: 'Delete',
   YES: 'Yes',
@@ -43,7 +43,7 @@ export const messages = {
   NAME_NARRATIVE: 'Title of current narrative',
   SAVE_NARRATIVE: 'Save',
   NARRATIVE: 'narrative',
-  INCLUDE_NARRATIVE: 'Include narrative',
+  INCLUDE_NARRATIVE: 'Include scenario',
   SELECT_NARRATIVE: 'Select narrative',
   KEY: 'Key',
   VALUE: 'Value',
@@ -170,8 +170,8 @@ export const messagesNL: typeof messages = {
   SETTINGS: { TITLE: 'Instellingen', ROUTE: '/instellingen' },
   CREATE_SCENARIO: { TITLE: 'Maak', ROUTE: '/maak' },
   SHOW_SCENARIO: { TITLE: 'Toon', ROUTE: '/toon' },
-  DOWNLOAD: 'Downloaden',
-  UPLOAD: 'Uploaden',
+  DOWNLOAD: 'Bewaar scenario bestand',
+  UPLOAD: 'Inlezen scenario bestand',
   CANCEL: 'Afbreken',
   DELETE: 'Verwijderen',
   YES: 'Ja',
@@ -202,7 +202,7 @@ export const messagesNL: typeof messages = {
   NARRATIVE: 'verhaallijn',
   NAME_NARRATIVE: 'Titel van huidige verhaallijn',
   SAVE_NARRATIVE: 'Bewaar',
-  INCLUDE_NARRATIVE: 'Neem verhaallijn op',
+  INCLUDE_NARRATIVE: 'Selecteer scenario',
   SELECT_NARRATIVE: 'Selecteer verhaallijn',
   KEY: 'Sleutel',
   VALUE: 'Waarde',
@@ -360,7 +360,7 @@ export type Locales = Record<Languages, Locale>;
 
 export type Listener = (locale: string, dir: TextDirection) => void;
 
-const onChangeLocale = [] as Listener[];
+const onChangeLocale: Listener[] = [];
 
 export const i18n = {
   defaultLocale: 'en' as Languages,
@@ -387,6 +387,7 @@ async function init(locales: Locales, selectedLocale: Languages) {
   if (defaultLocale) {
     i18n.defaultLocale = defaultLocale || selectedLocale;
   }
+  document.documentElement.setAttribute('lang', selectedLocale);
   await loadAndSetLocale(selectedLocale);
 }
 

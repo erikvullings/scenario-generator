@@ -13,6 +13,9 @@ import {
 } from '../models';
 import { t } from '../services';
 
+export const LANGUAGE = 'SG_LANGUAGE';
+export const SAVED = 'SG_MODEL_SAVED';
+
 const supRegex = /\^([^_ ]+)(_|$|\s)/g;
 const subRegex = /\_([^\^ ]+)(\^|$|\s)/g;
 

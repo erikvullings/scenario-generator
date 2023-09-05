@@ -25,6 +25,7 @@ class RoutingService {
         title: t('HOME', 'TITLE'),
         route: t('HOME', 'ROUTE'),
         visible: true,
+        default: true,
         component: HomePage,
       },
       {

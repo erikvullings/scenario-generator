@@ -20,7 +20,7 @@ import {
   t,
 } from '../services';
 import { Dashboards, DataModel, OldDataModel, defaultModels } from '../models';
-import { convertFromOld, formatDate } from '../utils';
+import { SAVED, convertFromOld, formatDate } from '../utils';
 // import { padLeft } from '';
 
 export const HomePage: MeiosisComponent = () => {
@@ -145,6 +145,7 @@ export const HomePage: MeiosisComponent = () => {
                   )}_scenario_generator.json`
                 );
                 dlAnchorElem.click();
+                localStorage.setItem(SAVED, 'true');
               },
             }),
             m('input#selectFiles[type=file][accept=.json]', {
