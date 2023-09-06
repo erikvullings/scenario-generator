@@ -180,10 +180,14 @@ const BoxHeader: MeiosisComponent<{
           id: sc.id,
           title: t('ADD_COMPONENT'),
           fixedFooter: true,
-          description: m(LayoutForm, {
-            form,
-            obj,
-          } as FormAttributes<ContextualItem>),
+          description: m(
+            '.row',
+            m(LayoutForm, {
+              form,
+              obj,
+              i18n: i18n.i18n,
+            } as FormAttributes<ContextualItem>)
+          ),
           // options: { opacity: 0.7 },
           buttons: [
             {
