@@ -107,7 +107,7 @@ export const CategoryTable: MeiosisComponent<{
                 disabled:
                   typeof excludedComps[c.id] !== 'undefined' &&
                   excludedComps[c.id],
-                checkedId: components[c.id],
+                initialValue: components[c.id],
                 options: c.values,
                 onchange: (ids) => {
                   if (!curNarrative.components) {
@@ -196,10 +196,13 @@ const generateNarrative = (
           }
           continue;
         }
-        const valuesToChooseFrom = catComp.values
-          .map(({ id }) => id)
-          .filter((id) => !excluded.includes(id));
-        if (valuesToChooseFrom.length === 0) return false;
+        const valuesToChooseFrom =
+          catComp.values &&
+          catComp.values
+            .map(({ id }) => id)
+            .filter((id) => !excluded.includes(id));
+        if (!valuesToChooseFrom || valuesToChooseFrom.length === 0)
+          return false;
         const value = getRandomValue(valuesToChooseFrom);
         if (value) {
           chosen[catComp.id] = [value];
@@ -228,6 +231,7 @@ const generateNarrative = (
 
 export const CreateScenarioPage: MeiosisComponent = () => {
   let editor: Quill;
+  let version = 0;
 
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.CREATE_SCENARIO),
@@ -236,11 +240,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
         state: { model, curNarrative = {} as Narrative, lockedComps = {} },
       } = attrs;
       const { categories = [] } = model.scenario;
-
-      const narratives =
-        model.scenario &&
-        model.scenario.narratives &&
-        model.scenario.narratives.filter((n) => n.included);
+      const narratives = model.scenario && model.scenario.narratives;
 
       return m('.create-scenario.row', [
         m('.col.s12', [
@@ -264,8 +264,9 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                 });
               const narrative = generateNarrative(model.scenario, locked);
               if (!narrative) {
-                alert('Narrative not generated in 100 tries');
+                alert(t('NO_NARRATIVE'));
               } else {
+                version++;
                 attrs.update({ curNarrative: () => narrative });
               }
             },
@@ -275,6 +276,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
             iconName: 'clear',
             style: 'margin-left: 10px;',
             onclick: () => {
+              version = 0;
               editor.setContents([] as any);
               attrs.update({
                 lockedComps: () => ({}),
@@ -327,6 +329,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                 {
                   label: t('OK'),
                   onclick: () => {
+                    version = 0;
                     model.scenario.narratives =
                       model.scenario.narratives.filter(
                         (n) => n.id !== curNarrative.id
@@ -350,12 +353,10 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               options: narratives,
               onchange: (v) => {
                 if (v && v.length > 0) {
+                  version++;
                   const newNarrative = narratives
                     .filter((n) => n.id === v[0])
                     .shift();
-                  console.log(v[0]);
-                  console.log(JSON.stringify(narratives, null, 2));
-                  console.log(JSON.stringify(newNarrative, null, 2));
                   if (newNarrative) {
                     editor.setContents(
                       newNarrative.desc ? JSON.parse(newNarrative.desc) : []
@@ -374,16 +375,21 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               },
             } as ISelectOptions<string>),
         ]),
-        categories.map((c) =>
-          m(
-            '.col.s12',
-            { className: `m${Math.round(12 / categories.length)}` },
-            m(CategoryTable, {
-              ...attrs,
-              catId: c.id,
-            })
-          )
-        ),
+        [
+          categories.map((c, i) =>
+            m(
+              '.col.s12',
+              {
+                className: `m${Math.round(12 / categories.length)}`,
+                key: 10000 * version + i,
+              },
+              m(CategoryTable, {
+                ...attrs,
+                catId: c.id,
+              })
+            )
+          ),
+        ],
         m(
           '.col.s12',
           {
