@@ -401,6 +401,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               editor = new Quill('#editor', {
                 // debug: 'info',
                 modules: {
+                  // table: true,
                   toolbar: [
                     [{ header: [1, 2, false] }],
                     ['bold', 'italic', 'underline', 'strike'],
@@ -424,6 +425,11 @@ export const CreateScenarioPage: MeiosisComponent = () => {
                 curNarrative.desc = JSON.stringify(editor.getContents());
                 attrs.update({ curNarrative });
               });
+              if (curNarrative) {
+                editor.setContents(
+                  curNarrative.desc ? JSON.parse(curNarrative.desc) : []
+                );
+              }
             },
           },
           [

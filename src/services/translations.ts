@@ -168,6 +168,7 @@ export const messages = {
   NO_NARRATIVE: 'Narrative not generated in 100 tries!',
   SPEC_CATS:
     'First specify some categories, where each category contains some key factors.',
+  EXPORT2WORD: 'Export to Word',
 };
 
 export const messagesNL: typeof messages = {
@@ -334,6 +335,7 @@ export const messagesNL: typeof messages = {
   NO_NARRATIVE: 'Er kon geen verhaallijn gegenereerd worden na 100 pogingen!',
   SPEC_CATS:
     'Definieer eerst 1 of 2 categorieën, met in iedere categorie enkele hoofdfactoren.',
+  EXPORT2WORD: 'Exporteer naar Word',
 };
 
 const setGuiLanguage = (language: Languages) => {

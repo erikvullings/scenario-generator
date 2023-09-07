@@ -1,9 +1,22 @@
 import m, { FactoryComponent } from 'mithril';
-import { Dashboards, ID, Narrative, ScenarioComponent } from '../models';
+import {
+  Dashboards,
+  DataModel,
+  ID,
+  Narrative,
+  ScenarioComponent,
+} from '../models';
 import { MeiosisComponent, setPage, t } from '../services';
-import { Select, ISelectOptions } from 'mithril-materialized';
+import {
+  Select,
+  ISelectOptions,
+  padLeft,
+  FlatButton,
+} from 'mithril-materialized';
 import { deepCopy } from 'mithril-ui-form';
 import Quill from 'quill';
+import { generateWord } from 'quill-to-word';
+import { formatDate } from '../utils';
 
 const CategoryTable: FactoryComponent<{
   curNarrative?: Narrative;
@@ -40,6 +53,27 @@ const CategoryTable: FactoryComponent<{
 export const ShowScenarioPage: MeiosisComponent = () => {
   let editor: Quill;
 
+  const exportToWord = async (model: DataModel) => {
+    const delta = editor.getContents();
+    const blob = await generateWord(delta, {
+      exportAs: 'blob',
+    });
+
+    const dlAnchorElem = document.getElementById('downloadAnchorElem');
+    if (!dlAnchorElem) {
+      return;
+    }
+    const version = typeof model.version === 'undefined' ? 1 : ++model.version;
+    dlAnchorElem.setAttribute('href', URL.createObjectURL(blob as Blob));
+    dlAnchorElem.setAttribute(
+      'download',
+      `${formatDate()}_v${padLeft(version, 3)}_${
+        model.scenario.label || `scenario_spark`
+      }.docx`
+    );
+    dlAnchorElem.click();
+  };
+
   return {
     oninit: ({ attrs }) => setPage(attrs, Dashboards.SHOW_SCENARIO),
     view: ({ attrs }) => {
@@ -63,6 +97,7 @@ export const ShowScenarioPage: MeiosisComponent = () => {
       }
 
       return m('.show-scenario.row', [
+        m('a#downloadAnchorElem', { style: 'display:none' }),
         m('.col.s12', [
           model.scenario &&
             model.scenario.narratives &&
@@ -134,11 +169,6 @@ export const ShowScenarioPage: MeiosisComponent = () => {
                 editor.setContents(
                   curNarrative.desc ? JSON.parse(curNarrative.desc) : []
                 );
-
-                // editor.on('text-change', () => {
-                //   curNarrative.desc = JSON.stringify(editor.getContents());
-                //   attrs.update({ curNarrative });
-                // });
               },
             },
             [
@@ -167,7 +197,16 @@ export const ShowScenarioPage: MeiosisComponent = () => {
                 // m('.col.s4', []),
               ]),
               // m('#toolbar'),
-              m('#editor', {}),
+              m('.col.s12', [
+                m(FlatButton, {
+                  label: t('EXPORT2WORD'),
+                  iconName: 'download',
+                  className: 'right',
+                  disabled: !curNarrative.desc,
+                  onclick: () => exportToWord(model),
+                }),
+              ]),
+              m('.col.s12', [m('#editor.row', {})]),
             ]
           ),
         ],
