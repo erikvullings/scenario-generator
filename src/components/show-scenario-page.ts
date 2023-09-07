@@ -7,21 +7,25 @@ import Quill from 'quill';
 
 const CategoryTable: FactoryComponent<{
   curNarrative?: Narrative;
-  comps: ScenarioComponent[];
+  comps?: ScenarioComponent[];
 }> = () => {
   return {
     view: ({ attrs: { curNarrative = {}, comps } }) => {
       const { components } = curNarrative;
-      const lookup = comps.reduce((acc, cur) => {
-        cur.values &&
-          cur.values.forEach((v) => {
-            acc[v.id] = v.label;
-          });
-        return acc;
-      }, {} as Record<string, string>);
+      const lookup =
+        comps &&
+        comps.reduce((acc, cur) => {
+          cur.values &&
+            cur.values.forEach((v) => {
+              acc[v.id] = v.label;
+            });
+          return acc;
+        }, {} as Record<string, string>);
       return m('table', [
         m('tr', [m('th', t('DIMENSION')), m('th', t('KEY_VALUE'))]),
         components &&
+          comps &&
+          lookup &&
           comps.map((c) => {
             return m('tr', [
               m('td', c.label),
