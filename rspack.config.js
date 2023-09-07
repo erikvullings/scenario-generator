@@ -10,7 +10,7 @@ module.exports = {
     main: './src/app.ts',
   },
   devServer: {
-    port: 8338,
+    port: 8339,
   },
   builtins: {
     define: {

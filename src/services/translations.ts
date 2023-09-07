@@ -157,15 +157,17 @@ export const messages = {
     MEANS2ACCESS: 'Means to access',
   },
   MODEL_NAMES: {
-    0: 'Simple model (in English)',
-    1: 'Empty model',
+    0: 'Empty model',
+    1: 'Simple model (in English)',
   },
   MODEL_DESC: {
-    0: 'A scenario model with a threat and a context category.',
-    1: 'An empty scenario model.',
+    0: 'An empty scenario model.',
+    1: 'A scenario model with a threat and a context category.',
   },
   JSON_NOT_VALID: 'JSON model file not valid! Aborting.',
   NO_NARRATIVE: 'Narrative not generated in 100 tries!',
+  SPEC_CATS:
+    'First specify some categories, where each category contains some key factors.',
 };
 
 export const messagesNL: typeof messages = {
@@ -184,7 +186,7 @@ export const messagesNL: typeof messages = {
   OK: 'Ok',
   NAME: 'Naam',
   DESCRIPTION: 'Omschrijving',
-  CATEGORIES: 'Categoriën',
+  CATEGORIES: 'Categorieën',
   DIMENSION: 'Hoofdfactor',
   DIMENSIONS: 'Hoofdfactoren',
   KEY_VALUE: 'Waarde',
@@ -321,15 +323,17 @@ export const messagesNL: typeof messages = {
     MEANS2ACCESS: 'Middel om binnen te dringen',
   },
   MODEL_NAMES: {
-    0: 'Simpel model (in Engels)',
-    1: 'Leeg model',
+    0: 'Leeg model',
+    1: 'Simpel model (in Engels)',
   },
   MODEL_DESC: {
-    0: 'Een scenario model met een dreigings- en contextcategorie.',
-    1: 'Een leeg scenario model.',
+    0: 'Een leeg scenario model.',
+    1: 'Een scenario model met een dreigings- en contextcategorie.',
   },
   JSON_NOT_VALID: 'JSON bestand niet valide! Het inladen wordt afgebroken.',
   NO_NARRATIVE: 'Er kon geen verhaallijn gegenereerd worden na 100 pogingen!',
+  SPEC_CATS:
+    'Definieer eerst 1 of 2 categorieën, met in iedere categorie enkele hoofdfactoren.',
 };
 
 const setGuiLanguage = (language: Languages) => {

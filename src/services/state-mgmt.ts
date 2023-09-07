@@ -122,7 +122,7 @@ export const mutateScenarioComponent = (
     console.error('Scenario component not found!');
     return;
   }
-  const { values } = comp;
+  const { values = [] } = comp;
   comp.values =
     mutation === 'update'
       ? values.map((c) => (c.id === item.id ? item : c))
@@ -149,7 +149,7 @@ export const moveScenarioComponent = (
     console.error('Scenario component not found!');
     return;
   }
-  const { values } = comp;
+  const { values = [] } = comp;
   const itemToMove = values.find((item) => item.id === moveId);
   if (!itemToMove) return;
   const itemDropped = values.find((item) => item.id === dropId);

@@ -64,7 +64,7 @@ export const ShowScenarioPage: MeiosisComponent = () => {
             model.scenario.narratives &&
             model.scenario.narratives.length > 0 &&
             m(Select, {
-              className: 'right mb0',
+              className: 'right mb0 w30',
               label: t('SELECT_NARRATIVE'),
               checkedId:
                 curNarrative && curNarrative.saved

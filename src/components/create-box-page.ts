@@ -214,12 +214,11 @@ const BoxRow: MeiosisComponent<{
   return {
     view: ({ attrs }) => {
       const { sc, form, compColor } = attrs;
-
       return m('li', { key: sc.id }, [
         m(
           'ul.kanban-row',
           m(BoxHeader, { ...attrs, sc, form }),
-          sc.values.map((c) =>
+          sc.values?.map((c) =>
             m(BoxItem, {
               key: c.id,
               ...attrs,
@@ -250,10 +249,10 @@ const BoxView: MeiosisComponent<{
         state: { model },
       } = attrs;
       const { scenario } = model;
-      const { categories, components } = scenario;
+      const { categories, components: components } = scenario;
       const category = categories[categoryId];
       const scs = components.filter(
-        (c) => category.componentIds.indexOf(c.id) >= 0
+        (c) => category.componentIds && category.componentIds.indexOf(c.id) >= 0
       );
 
       return m('ul.kanban', [
@@ -271,78 +270,78 @@ export const CreateBoxPage: MeiosisComponent = () => {
     { id: 'id', autogenerate: 'id' },
     { id: 'label', type: 'text', label: t('NAME') },
     { id: 'desc', type: 'textarea', label: t('DESCRIPTION') },
-    {
-      id: 'context',
-      type: 'select',
-      label: t('CONTEXT'),
-      value: 'none',
-      options: contextTypeOptions(t),
-    },
-    {
-      id: 'locationType',
-      show: ['context=location'],
-      type: 'select',
-      label: t('LOCATION_TYPE'),
-      className: 'col s6',
-      options: [
-        { id: 'name', label: t('NAME') },
-        { id: 'coords', label: t('COORDINATES') },
-      ],
-    },
-    {
-      id: 'location',
-      show: ['context=location & locationType=name'],
-      type: 'text',
-      className: 'col s6',
-      label: t('LOCATION_NAME'),
-    },
-    {
-      id: 'lat',
-      show: ['context=location & locationType=coords'],
-      type: 'number',
-      className: 'col s3',
-      label: t('LATITUDE'),
-    },
-    {
-      id: 'lon',
-      show: ['context=location & locationType=coords'],
-      type: 'number',
-      className: 'col s3',
-      label: t('LONGITUDE'),
-    },
-    {
-      id: 'locationTypeType',
-      show: ['context=locationType'],
-      type: 'select',
-      label: t('LOCATION_TYPE'),
-      className: 'col s6',
-      options: [
-        { id: 'list', label: t('PICK_FROM_LIST') },
-        { id: 'keyValue', label: t('ENTER_KEY_VALUE') },
-      ],
-    },
-    {
-      id: 'osmTypeId',
-      show: ['context=locationType & locationTypeType=list'],
-      type: 'select',
-      label: t('NAME'),
-      className: 'col s6',
-      options: OsmTypes.map(({ id, name }) => ({ id, label: name })),
-    },
-    {
-      id: 'value',
-      show: ['context=locationType & locationTypeType=keyValue'],
-      type: 'text',
-      className: 'col s3',
-      label: t('KEY'),
-    },
-    {
-      id: 'key',
-      show: ['context=locationType & locationTypeType=keyValue'],
-      type: 'text',
-      className: 'col s3',
-      label: t('VALUE'),
-    },
+    // {
+    //   id: 'context',
+    //   type: 'select',
+    //   label: t('CONTEXT'),
+    //   value: 'none',
+    //   options: contextTypeOptions(t),
+    // },
+    // {
+    //   id: 'locationType',
+    //   show: ['context=location'],
+    //   type: 'select',
+    //   label: t('LOCATION_TYPE'),
+    //   className: 'col s6',
+    //   options: [
+    //     { id: 'name', label: t('NAME') },
+    //     { id: 'coords', label: t('COORDINATES') },
+    //   ],
+    // },
+    // {
+    //   id: 'location',
+    //   show: ['context=location & locationType=name'],
+    //   type: 'text',
+    //   className: 'col s6',
+    //   label: t('LOCATION_NAME'),
+    // },
+    // {
+    //   id: 'lat',
+    //   show: ['context=location & locationType=coords'],
+    //   type: 'number',
+    //   className: 'col s3',
+    //   label: t('LATITUDE'),
+    // },
+    // {
+    //   id: 'lon',
+    //   show: ['context=location & locationType=coords'],
+    //   type: 'number',
+    //   className: 'col s3',
+    //   label: t('LONGITUDE'),
+    // },
+    // {
+    //   id: 'locationTypeType',
+    //   show: ['context=locationType'],
+    //   type: 'select',
+    //   label: t('LOCATION_TYPE'),
+    //   className: 'col s6',
+    //   options: [
+    //     { id: 'list', label: t('PICK_FROM_LIST') },
+    //     { id: 'keyValue', label: t('ENTER_KEY_VALUE') },
+    //   ],
+    // },
+    // {
+    //   id: 'osmTypeId',
+    //   show: ['context=locationType & locationTypeType=list'],
+    //   type: 'select',
+    //   label: t('NAME'),
+    //   className: 'col s6',
+    //   options: OsmTypes.map(({ id, name }) => ({ id, label: name })),
+    // },
+    // {
+    //   id: 'value',
+    //   show: ['context=locationType & locationTypeType=keyValue'],
+    //   type: 'text',
+    //   className: 'col s3',
+    //   label: t('KEY'),
+    // },
+    // {
+    //   id: 'key',
+    //   show: ['context=locationType & locationTypeType=keyValue'],
+    //   type: 'text',
+    //   className: 'col s3',
+    //   label: t('VALUE'),
+    // },
   ] as UIForm<ContextualItem>;
   let compColor: { [key: ID]: [Color, Color] } = {};
 
@@ -362,7 +361,7 @@ export const CreateBoxPage: MeiosisComponent = () => {
         const componentUsage = narratives
           .filter((n) => n.included)
           .reduce((acc, cur) => {
-            const { components } = cur;
+            const { components: components } = cur;
             Object.keys(components).forEach((c) => {
               for (const compValue of components[c]) {
                 if (acc[compValue]) {
@@ -404,7 +403,9 @@ export const CreateBoxPage: MeiosisComponent = () => {
 
       return [
         m('.create-box-page', [
-          categories.length > 1
+          categories.length > 1 &&
+          categories[0].componentIds &&
+          categories[1].componentIds
             ? m(Tabs, {
                 tabs: categories.map((c, categoryId) => ({
                   id: c.id,
@@ -417,9 +418,9 @@ export const CreateBoxPage: MeiosisComponent = () => {
                   }),
                 })),
               })
-            : categories.length === 1
+            : categories.length === 1 && categories[0].componentIds
             ? m(BoxView, { ...attrs, compColor, categoryId: 0, form })
-            : 'FIRST DEFINE SOME COMPONENT CATEGORIES',
+            : m('.row.mt10', m('.col.s12', t('SPEC_CATS'))),
           activeTooltip &&
             m(
               '.popupContainer',

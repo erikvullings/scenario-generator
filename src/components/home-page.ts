@@ -29,7 +29,6 @@ import {
   defaultModels,
 } from '../models';
 import { SAVED, convertFromOld, formatDate } from '../utils';
-// import { padLeft } from '';
 
 const TableView: FactoryComponent<{
   narratives: Narrative[];
@@ -295,8 +294,9 @@ export const HomePage: MeiosisComponent = () => {
                         title: c.label,
                         vnode: m(TableView, {
                           narratives: selectedNarratives,
-                          components: components.filter((comp) =>
-                            c.componentIds.includes(comp.id)
+                          components: components.filter(
+                            (comp) =>
+                              c.componentIds && c.componentIds.includes(comp.id)
                           ),
                         }),
                       })),
@@ -305,8 +305,10 @@ export const HomePage: MeiosisComponent = () => {
                       '.row.narratives',
                       m(TableView, {
                         narratives: selectedNarratives,
-                        components: components.filter((comp) =>
-                          categories[0].componentIds.includes(comp.id)
+                        components: components.filter(
+                          (comp) =>
+                            categories[0].componentIds &&
+                            categories[0].componentIds.includes(comp.id)
                         ),
                       })
                     ),
@@ -376,15 +378,19 @@ export const HomePage: MeiosisComponent = () => {
               ]),
             ]),
             buttons: [
+              { label: t('CANCEL'), iconName: 'cancel' },
               {
-                label: t('YES'),
+                label: t('OK'),
                 iconName: 'delete',
-                onclick: () => {
-                  saveModel(attrs, defaultModels[selectedId], true);
-                  routingSvc.switchTo(Dashboards.HOME);
+                onclick: async () => {
+                  await saveModel(attrs, defaultModels[selectedId], true);
+                  routingSvc.switchTo(
+                    selectedId === 0
+                      ? Dashboards.SETTINGS
+                      : Dashboards.DEFINE_BOX
+                  );
                 },
               },
-              { label: t('NO'), iconName: 'cancel' },
             ],
           }),
         ]),

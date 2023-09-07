@@ -331,10 +331,12 @@ export const convertFromOld = (old: OldDataModel): DataModel => {
         acc.scenario.thresholdColors = thresholdColors;
         if (acc.scenario.categories) {
           let order = 1;
-          const compIds = acc.scenario.categories.reduce((acc, cur) => {
-            cur.componentIds.forEach((c) => (acc[c] = order++));
-            return acc;
-          }, {} as { [key: ID]: number });
+          const compIds = acc.scenario.categories
+            .filter((c) => c.componentIds)
+            .reduce((acc, cur) => {
+              cur.componentIds?.forEach((c) => (acc[c] = order++));
+              return acc;
+            }, {} as { [key: ID]: number });
           acc.scenario.components = acc.scenario.components.map((c) => ({
             ...c,
             order: compIds[c.id],

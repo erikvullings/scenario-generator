@@ -1,13 +1,12 @@
 import m, { FactoryComponent } from 'mithril';
 import {
   Dashboards,
-  DataModel,
   ID,
   Inconsistencies,
   Scenario,
-  contextTypeOptions,
+  emptyModel,
 } from '../models';
-import { MeiosisComponent, saveModel, setPage, t } from '../services';
+import { MeiosisComponent, i18n, saveModel, setPage, t } from '../services';
 import {
   FlatButton,
   Icon,
@@ -70,6 +69,35 @@ export const SettingsPage: MeiosisComponent = () => {
     { id: 'label', type: 'text', label: t('NAME') },
     { id: 'desc', type: 'textarea', label: t('DESCRIPTION') },
     {
+      id: 'categories',
+      label: t('CATEGORIES'),
+      type: [
+        { id: 'id', autogenerate: 'id' },
+        {
+          id: 'label',
+          className: 'col s6 m4 l3',
+          type: 'text',
+          label: t('NAME'),
+        },
+        {
+          id: 'desc',
+          className: 'col s6 m8 l9',
+          type: 'text',
+          label: t('DESCRIPTION'),
+        },
+        {
+          id: 'componentIds',
+          type: 'select',
+          multiple: true,
+          label: t('DIMENSIONS'),
+          options: 'components',
+        },
+      ],
+      repeat: true,
+      pageSize: 1,
+      max: 2,
+    },
+    {
       id: 'components',
       type: [
         { id: 'id', autogenerate: 'id' },
@@ -88,17 +116,17 @@ export const SettingsPage: MeiosisComponent = () => {
         {
           id: 'label',
           type: 'text',
-          className: 'col s6 m3',
+          className: 'col s6 m8',
           label: t('NAME'),
         },
-        {
-          id: 'context',
-          type: 'select',
-          multiple: true,
-          className: 'col s12 m5',
-          label: t('CONTEXT'),
-          options: contextTypeOptions(t),
-        },
+        // {
+        //   id: 'context',
+        //   type: 'select',
+        //   multiple: true,
+        //   className: 'col s12 m5',
+        //   label: t('CONTEXT'),
+        //   options: contextTypeOptions(t),
+        // },
         {
           id: 'desc',
           type: 'text',
@@ -110,25 +138,6 @@ export const SettingsPage: MeiosisComponent = () => {
       pageSize: 1,
       sortProperty: 'order',
       label: t('DIMENSIONS'),
-    },
-    {
-      id: 'categories',
-      type: [
-        { id: 'id', autogenerate: 'id' },
-        { id: 'label', type: 'text', label: t('NAME') },
-        { id: 'desc', type: 'textarea', label: t('DESCRIPTION') },
-        {
-          id: 'componentIds',
-          type: 'select',
-          multiple: true,
-          label: t('DIMENSIONS'),
-          options: 'components',
-        },
-      ],
-      repeat: true,
-      pageSize: 1,
-      max: 2,
-      label: t('CATEGORIES'),
     },
     {
       id: 'thresholdColors',
@@ -160,12 +169,11 @@ export const SettingsPage: MeiosisComponent = () => {
     view: ({ attrs }) => {
       const { model } = attrs.state;
       const { inconsistencies } = model.scenario;
-      const rowComp =
-        rowId &&
-        model.scenario.components.filter((c) => c.id === rowId).shift();
-      const colComp =
-        colId &&
-        model.scenario.components.filter((c) => c.id === colId).shift();
+      const comps = model.scenario.components.filter((c) => c.id && c.label);
+      const rowComp = rowId && comps.filter((c) => c.id === rowId).shift();
+      const colComp = colId && comps.filter((c) => c.id === colId).shift();
+      const rValues = rowComp && rowComp.values;
+      const cValues = colComp && colComp.values;
       return [
         m('.settings-page.row', [
           m(Tabs, {
@@ -182,116 +190,120 @@ export const SettingsPage: MeiosisComponent = () => {
                   m(LayoutForm, {
                     obj: model.scenario,
                     form,
-                    onchange: () => {
-                      saveModel(attrs, model);
+                    i18n: i18n.i18n,
+                    onchange: async () => {
+                      await saveModel(attrs, model);
                     },
                   } as FormAttributes<Scenario>),
                 ]),
               },
               {
                 title: t('INCONSISTENCIES', 'title'),
-                vnode: m('.inconsistencies-settings.row', [
-                  m(Select, {
-                    checkedId: rowId,
-                    iconName: 'view_stream',
-                    className: 'col s6 m4',
-                    placeholder: t('i18n', 'pickOne'),
-                    label: t('INCONSISTENCIES', 'SELECT_ROW'),
-                    options: model.scenario.components,
-                    onchange: (ids) => (rowId = ids[0] as string),
-                  }),
-                  m(Select, {
-                    checkedId: colId,
-                    iconName: 'view_week',
-                    className: 'col s6 m4',
-                    placeholder: t('i18n', 'pickOne'),
-                    label: t('INCONSISTENCIES', 'SELECT_COL'),
-                    options: model.scenario.components,
-                    onchange: (ids) => (colId = ids[0] as string),
-                  }),
-                  m(
-                    '.col.s12.m4',
-                    m('.card', [
-                      m('ul', [
-                        m(
-                          'li',
-                          m(Icon, {
-                            style: 'vertical-align: bottom',
-                            iconName: 'check_circle_outline',
-                          }),
-                          t('COMBINATIONS', 'POSSIBLE')
-                        ),
-                        m(
-                          'li',
-                          m(Icon, {
-                            style: 'vertical-align: bottom',
-                            iconName: 'radio_button_unchecked',
-                          }),
-                          t('COMBINATIONS', 'IMPOSSIBLE')
-                        ),
-                        m(
-                          'li',
-                          m(Icon, {
-                            style: 'vertical-align: bottom',
-                            iconName: 'blur_circular',
-                          }),
-                          t('COMBINATIONS', 'IMPROBABLE')
-                        ),
-                      ]),
-                    ])
-                  ),
-                  rowComp &&
-                    colComp &&
+                vnode: m(
+                  '.inconsistencies-settings.row',
+                  comps.length > 0 && [
+                    m(Select, {
+                      checkedId: rowId,
+                      iconName: 'view_stream',
+                      className: 'col s6 m4',
+                      placeholder: t('i18n', 'pickOne'),
+                      label: t('INCONSISTENCIES', 'SELECT_ROW'),
+                      options: comps,
+                      onchange: (ids) => (rowId = ids[0] as string),
+                    }),
+                    m(Select, {
+                      checkedId: colId,
+                      iconName: 'view_week',
+                      className: 'col s6 m4',
+                      placeholder: t('i18n', 'pickOne'),
+                      label: t('INCONSISTENCIES', 'SELECT_COL'),
+                      options: comps,
+                      onchange: (ids) => (colId = ids[0] as string),
+                    }),
                     m(
-                      '.col.s12',
-                      m('.row', [
-                        m(
-                          '.col.s12',
+                      '#legend.col.s12.m4',
+                      m('.card', [
+                        m('ul', [
                           m(
-                            'table.responsive-table.highlight',
-                            {
-                              style: 'display: block;overflow-x: auto',
-                            },
-                            [
-                              m(
-                                'thead',
-                                m('tr', [
-                                  m(
-                                    'th',
-                                    `${rowComp.label} \\ ${colComp.label}`
-                                  ),
-                                  ...colComp.values.map((v) =>
-                                    m('th', v.label)
-                                  ),
-                                ])
-                              ),
-                              m(
-                                'tbody',
-                                rowComp.values.map((r) =>
-                                  m('tr', [
-                                    m('td', r.label),
-                                    ...colComp.values.map((c) =>
-                                      m(
-                                        'td',
-                                        m(InconsistencyCheckbox, {
-                                          rowId: r.id,
-                                          colId: c.id,
-                                          inconsistencies,
-                                          callback: async () =>
-                                            await saveModel(attrs, model),
-                                        })
-                                        // inconsistencies[key(r.id, c.id)] || 'NONE'
-                                      )
-                                    ),
-                                  ])
-                                )
-                              ),
-                            ]
-                          )
-                        ),
+                            'li',
+                            m(Icon, {
+                              style: 'vertical-align: bottom',
+                              iconName: 'check_circle_outline',
+                            }),
+                            t('COMBINATIONS', 'POSSIBLE')
+                          ),
+                          m(
+                            'li',
+                            m(Icon, {
+                              style: 'vertical-align: bottom',
+                              iconName: 'radio_button_unchecked',
+                            }),
+                            t('COMBINATIONS', 'IMPOSSIBLE')
+                          ),
+                          m(
+                            'li',
+                            m(Icon, {
+                              style: 'vertical-align: bottom',
+                              iconName: 'blur_circular',
+                            }),
+                            t('COMBINATIONS', 'IMPROBABLE')
+                          ),
+                        ]),
                       ])
                     ),
-                ]),
+                    rowComp &&
+                      colComp &&
+                      rValues &&
+                      cValues &&
+                      m(
+                        '.col.s12',
+                        m('.row', [
+                          m(
+                            '.col.s12',
+                            m(
+                              'table.responsive-table.highlight',
+                              {
+                                style: 'display: block;overflow-x: auto',
+                              },
+                              [
+                                m(
+                                  'thead',
+                                  m('tr', [
+                                    m(
+                                      'th',
+                                      `${rowComp.label} \\ ${colComp.label}`
+                                    ),
+                                    ...cValues.map((v) => m('th', v.label)),
+                                  ])
+                                ),
+                                m(
+                                  'tbody',
+                                  rValues.map((r) =>
+                                    m('tr', [
+                                      m('th', r.label),
+                                      ...cValues.map((c) =>
+                                        m(
+                                          'td',
+                                          m(InconsistencyCheckbox, {
+                                            rowId: r.id,
+                                            colId: c.id,
+                                            inconsistencies,
+                                            callback: async () =>
+                                              await saveModel(attrs, model),
+                                          })
+                                          // inconsistencies[key(r.id, c.id)] || 'NONE'
+                                        )
+                                      ),
+                                    ])
+                                  )
+                                ),
+                              ]
+                            )
+                          ),
+                        ])
+                      ),
+                  ]
+                ),
               },
             ],
           }),
@@ -307,21 +319,7 @@ export const SettingsPage: MeiosisComponent = () => {
               {
                 label: t('OK'),
                 onclick: () => {
-                  const newModel = {
-                    version: 1,
-                    lastUpdate: Date.now(),
-                    scenario: {
-                      id: '',
-                      label: '',
-                      desc: '',
-                      inconsistencies: {},
-                      categories: [],
-                      components: [],
-                      narratives: [],
-                      thresholdColors: [],
-                    } as Scenario,
-                  } as DataModel;
-                  saveModel(attrs, newModel);
+                  saveModel(attrs, emptyModel);
                 },
               },
             ],

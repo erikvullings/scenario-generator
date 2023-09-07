@@ -89,7 +89,9 @@ export const CategoryTable: MeiosisComponent<{
                 lockState = v;
                 attrs.update({
                   lockedComps: (l = {}) => {
-                    category?.componentIds.forEach((id) => (l[id] = lockState));
+                    category?.componentIds?.forEach(
+                      (id) => (l[id] = lockState)
+                    );
                     return l;
                   },
                 });
@@ -168,7 +170,9 @@ const generateNarrative = (
     const chosen = { ...locked } as Record<ID, ID[]>;
     for (const category of categories) {
       const catComps = components
-        .filter((c) => category.componentIds.includes(c.id))
+        .filter(
+          (c) => category.componentIds && category.componentIds.includes(c.id)
+        )
         .map((c) => ({ ...c, inc: inconsistencies[c.id] }))
         .sort((a, b) =>
           a.inc && b.inc
@@ -346,7 +350,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
           ],
           narratives &&
             m(Select, {
-              className: 'right mb0',
+              className: 'right mb0 w30',
               label: t('SELECT_NARRATIVE'),
               checkedId: curNarrative.saved ? curNarrative.id : undefined,
               placeholder: t('i18n', 'pickOne'),

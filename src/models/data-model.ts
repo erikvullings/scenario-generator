@@ -135,7 +135,7 @@ export type Scenario = Item & {
 
 /** Category of components, e.g. to separate context from narrative */
 export type Category = Item & {
-  componentIds: ID[];
+  componentIds?: ID[];
 };
 
 /** Key factors and their values that make up a narrative */
@@ -145,7 +145,7 @@ export type ScenarioComponent = Item & {
   /** Manual mode - if so, do not automatically generate a value for it */
   manual?: boolean;
   /** Key factor values */
-  values: ContextualItem[];
+  values?: ContextualItem[];
   /** Are there any contexts that are relevant, such as a location or mitigation measures */
   contexts?: ContextType[];
 };
@@ -346,7 +346,7 @@ export const emptyModel = {
  *    MODEL_NAME, MODEL_DESC
  * where the index of the model should match.
  */
-export const defaultModels: DataModel[] = [defaultModel, emptyModel];
+export const defaultModels: DataModel[] = [emptyModel, defaultModel];
 
 export type ID = string;
 
