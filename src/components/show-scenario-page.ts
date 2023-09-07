@@ -6,24 +6,28 @@ import {
   Narrative,
   ScenarioComponent,
 } from '../models';
-import { MeiosisComponent, setPage, t } from '../services';
+import { MeiosisComponent, i18n, setPage, t } from '../services';
 import {
   Select,
   ISelectOptions,
-  padLeft,
   FlatButton,
+  InputCheckbox,
+  uniqueId,
 } from 'mithril-materialized';
 import { deepCopy } from 'mithril-ui-form';
 import Quill from 'quill';
 import { generateWord } from 'quill-to-word';
-import { formatDate } from '../utils';
+import { modelToSaveName } from '../utils';
+import { htmlTemplate } from '../assets/html-styles';
 
 const CategoryTable: FactoryComponent<{
   curNarrative?: Narrative;
   comps?: ScenarioComponent[];
 }> = () => {
+  let id: string;
   return {
-    view: ({ attrs: { curNarrative = {}, comps } }) => {
+    oninit: () => (id = uniqueId()),
+    view: ({ attrs: { curNarrative = {} as Narrative, comps } }) => {
       const { components } = curNarrative;
       const lookup =
         comps &&
@@ -34,18 +38,52 @@ const CategoryTable: FactoryComponent<{
             });
           return acc;
         }, {} as Record<string, string>);
-      return m('table', [
-        m('tr', [m('th', t('DIMENSION')), m('th', t('KEY_VALUE'))]),
-        components &&
-          comps &&
-          lookup &&
-          comps.map((c) => {
-            return m('tr', [
-              m('td', c.label),
-              m('td', components[c.id].map((id) => lookup[id]).join(', ')),
-            ]);
-          }),
-      ]);
+      return [
+        m('table.responsive-table.highlight', { id }, [
+          m(
+            'thead',
+            m('tr', [m('th', t('DIMENSION')), m('th', t('KEY_VALUE'))])
+          ),
+          m(
+            'tbody',
+            components &&
+              comps &&
+              lookup &&
+              comps.map((c) => {
+                return m('tr', [
+                  m('th', c.label),
+                  m('td', components[c.id].map((id) => lookup[id]).join(', ')),
+                ]);
+              })
+          ),
+        ]),
+
+        m(FlatButton, {
+          label: 'Copy table to clipboard',
+          className: 'right',
+          iconName: 'content_copy',
+          onclick: () => {
+            function listener(e: ClipboardEvent) {
+              if (!e.clipboardData) return;
+              const table = document.getElementById(id);
+              if (!table) return;
+              console.log(table.outerHTML);
+              e.clipboardData.setData(
+                'text/html',
+                htmlTemplate({
+                  body: table.outerHTML,
+                  lang: i18n.currentLocale,
+                })
+              );
+              // e.clipboardData.setData('text/plain', md);
+              e.preventDefault();
+            }
+            document.addEventListener('copy', listener);
+            document.execCommand('copy');
+            document.removeEventListener('copy', listener);
+          },
+        }),
+      ];
     },
   };
 };
@@ -53,23 +91,35 @@ const CategoryTable: FactoryComponent<{
 export const ShowScenarioPage: MeiosisComponent = () => {
   let editor: Quill;
 
-  const exportToWord = async (model: DataModel) => {
+  const exportToWord = async (model: DataModel, narrativeName?: string) => {
     const delta = editor.getContents();
     const blob = await generateWord(delta, {
       exportAs: 'blob',
+      paragraphStyles: {
+        normal: {
+          paragraph: {
+            spacing: {
+              before: 0,
+              after: 12,
+            },
+          },
+          run: {
+            font: 'Calibri',
+            size: 24,
+          },
+        },
+      },
     });
 
     const dlAnchorElem = document.getElementById('downloadAnchorElem');
     if (!dlAnchorElem) {
       return;
     }
-    const version = typeof model.version === 'undefined' ? 1 : ++model.version;
+    model.version = model.version ? model.version++ : 1;
     dlAnchorElem.setAttribute('href', URL.createObjectURL(blob as Blob));
     dlAnchorElem.setAttribute(
       'download',
-      `${formatDate()}_v${padLeft(version, 3)}_${
-        model.scenario.label || `scenario_spark`
-      }.docx`
+      `${modelToSaveName(model, narrativeName)}.docx`
     );
     dlAnchorElem.click();
   };
@@ -198,12 +248,18 @@ export const ShowScenarioPage: MeiosisComponent = () => {
               ]),
               // m('#toolbar'),
               m('.col.s12', [
+                m(InputCheckbox, {
+                  checked: curNarrative.included,
+                  label: t('NARRATIVE_INCLUDED'),
+                  disabled: true,
+                  className: 'left',
+                }),
                 m(FlatButton, {
                   label: t('EXPORT2WORD'),
                   iconName: 'download',
                   className: 'right',
                   disabled: !curNarrative.desc,
-                  onclick: () => exportToWord(model),
+                  onclick: () => exportToWord(model, curNarrative.label),
                 }),
               ]),
               m('.col.s12', [m('#editor.row', {})]),

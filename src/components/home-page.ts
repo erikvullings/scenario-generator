@@ -6,7 +6,6 @@ import {
   ModalPanel,
   RadioButtons,
   Tabs,
-  padLeft,
 } from 'mithril-materialized';
 import background from '../assets/background.webp';
 import DutchFlag from '../assets/flag-nl.png';
@@ -28,7 +27,7 @@ import {
   ScenarioComponent,
   defaultModels,
 } from '../models';
-import { SAVED, capitalize, convertFromOld, formatDate } from '../utils';
+import { SAVED, capitalize, convertFromOld, modelToSaveName } from '../utils';
 
 const TableView: MeiosisComponent<{
   narratives: Narrative[];
@@ -198,9 +197,7 @@ export const HomePage: MeiosisComponent = () => {
                 dlAnchorElem.setAttribute('href', dataStr);
                 dlAnchorElem.setAttribute(
                   'download',
-                  `${formatDate()}_v${padLeft(version, 3)}_${
-                    model.scenario.label || `scenario_spark`
-                  }.json`
+                  `${modelToSaveName(model)}.json`
                 );
                 dlAnchorElem.click();
                 localStorage.setItem(SAVED, 'true');

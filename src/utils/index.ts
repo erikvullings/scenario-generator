@@ -355,3 +355,14 @@ export const convertFromOld = (old: OldDataModel): DataModel => {
     } as DataModel
   );
 };
+
+export const modelToSaveName = (model: DataModel, narrativeName?: string) => {
+  let name = model.scenario?.label || 'scenario_spark';
+  if (narrativeName) {
+    name += `_${narrativeName}`;
+  }
+  return `${name.replace(/\s/g, '_')}_v${padLeft(
+    model.version || 1,
+    3
+  )}_${formatDate()}`;
+};
