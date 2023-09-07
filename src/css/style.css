@@ -341,13 +341,14 @@ li.collection-item:first-child {
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 150px;
+  width: 300px;
   background-color: black;
   color: #fff;
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
-
+  font-size: 1rem;
+  line-height: 2rem;
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;

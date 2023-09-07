@@ -6,11 +6,11 @@ export type Languages = 'nl' | 'en';
 
 export const messages = {
   HOME: { TITLE: 'home', ROUTE: '/home' },
-  ABOUT: { TITLE: 'about', ROUTE: '/about' },
-  DEFINE_BOX: { TITLE: 'Define', ROUTE: '/define' },
+  ABOUT: { TITLE: 'About the app', ROUTE: '/about' },
+  DEFINE_BOX: { TITLE: 'Morphological box', ROUTE: '/define' },
   SETTINGS: { TITLE: 'Settings', ROUTE: '/settings' },
-  CREATE_SCENARIO: { TITLE: 'Create', ROUTE: '/create' },
-  SHOW_SCENARIO: { TITLE: 'Show', ROUTE: '/show' },
+  CREATE_SCENARIO: { TITLE: 'Create scenario', ROUTE: '/create' },
+  SHOW_SCENARIO: { TITLE: 'Show scenarios', ROUTE: '/show' },
   DOWNLOAD: 'Save scenario file',
   UPLOAD: 'Load scenario file',
   CANCEL: 'Cancel',
@@ -158,19 +158,23 @@ export const messages = {
   },
   MODEL_NAMES: {
     0: 'Simple model (in English)',
+    1: 'Empty model',
   },
   MODEL_DESC: {
     0: 'A scenario model with a threat and a context category.',
+    1: 'An empty scenario model.',
   },
+  JSON_NOT_VALID: 'JSON model file not valid! Aborting.',
+  NO_NARRATIVE: 'Narrative not generated in 100 tries!',
 };
 
 export const messagesNL: typeof messages = {
   HOME: { TITLE: 'home', ROUTE: '/home' },
-  ABOUT: { TITLE: 'over', ROUTE: '/over' },
-  DEFINE_BOX: { TITLE: 'Definieer', ROUTE: '/definieer' },
+  ABOUT: { TITLE: 'over de app', ROUTE: '/over' },
+  DEFINE_BOX: { TITLE: 'Morfologische box', ROUTE: '/definieer' },
   SETTINGS: { TITLE: 'Instellingen', ROUTE: '/instellingen' },
-  CREATE_SCENARIO: { TITLE: 'Maak', ROUTE: '/maak' },
-  SHOW_SCENARIO: { TITLE: 'Toon', ROUTE: '/toon' },
+  CREATE_SCENARIO: { TITLE: 'Maak scenario', ROUTE: '/maak' },
+  SHOW_SCENARIO: { TITLE: "Toon scenario's", ROUTE: '/toon' },
   DOWNLOAD: 'Bewaar scenario bestand',
   UPLOAD: 'Inlezen scenario bestand',
   CANCEL: 'Afbreken',
@@ -318,10 +322,14 @@ export const messagesNL: typeof messages = {
   },
   MODEL_NAMES: {
     0: 'Simpel model (in Engels)',
+    1: 'Leeg model',
   },
   MODEL_DESC: {
     0: 'Een scenario model met een dreigings- en contextcategorie.',
+    1: 'Een leeg scenario model.',
   },
+  JSON_NOT_VALID: 'JSON bestand niet valide! Het inladen wordt afgebroken.',
+  NO_NARRATIVE: 'Er kon geen verhaallijn gegenereerd worden na 100 pogingen!',
 };
 
 const setGuiLanguage = (language: Languages) => {
