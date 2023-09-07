@@ -1,17 +1,20 @@
 import m, { FactoryComponent } from 'mithril';
 import { meiosisSetup } from 'meiosis-setup';
-import { i18n, routingSvc } from '.';
+import { i18n, routingSvc, t } from '.';
 import {
   ContextualItem,
   Dashboards,
   DataModel,
   ID,
   Narrative,
+  Scenario,
   defaultModel,
+  thresholdColors,
 } from '../models';
 import { ldb } from '../utils/local-ldb';
 import { MeiosisCell, Update } from 'meiosis-setup/types';
 import { LANGUAGE, SAVED } from '../utils';
+import { uniqueId } from 'mithril-materialized';
 
 const MODEL_KEY = 'SG_MODEL';
 const SCENARIO_TITLE = 'SG_JOURNAL_TITLE';
@@ -51,6 +54,32 @@ export const changePage = (
   cell.update({ page });
 };
 
+const validateScenario = (scenario?: Scenario) => {
+  console.log('Validating scenario');
+  if (!scenario) return false;
+  if (!scenario.inconsistencies) scenario.inconsistencies = {};
+  if (!scenario.categories) scenario.categories = [];
+  if (!scenario.components) scenario.components = [];
+  if (!scenario.narratives) scenario.narratives = [];
+  if (!scenario.thresholdColors) scenario.thresholdColors = thresholdColors;
+  scenario.narratives.forEach((c) => {
+    if (!c.components) c.components = {};
+    if (!c.id) c.id = uniqueId();
+    if (!c.label) c.label = 'UNKNOWN';
+  });
+  scenario.categories.forEach((c) => {
+    if (!c.componentIds) c.componentIds = [];
+    if (!c.id) c.id = uniqueId();
+    if (!c.label) c.label = 'UNKNOWN';
+  });
+  scenario.components.forEach((c) => {
+    if (!c.values) c.values = [];
+    if (!c.id) c.id = uniqueId();
+    if (!c.label) c.label = 'UNKNOWN';
+  });
+  return true;
+};
+
 export const saveModel = async (
   cell: MeiosisCell<State>,
   model: DataModel,
@@ -61,6 +90,10 @@ export const saveModel = async (
   await ldb.set(MODEL_KEY, JSON.stringify(model));
   // console.log(JSON.stringify(model, null, 2));
   if (reset) {
+    if (!validateScenario(model.scenario)) {
+      alert(t('JSON_NOT_VALID'));
+      return;
+    }
     cell.update({
       model: () => model,
       activeTooltip: '',
@@ -119,6 +152,8 @@ export const moveScenarioComponent = (
   const { values } = comp;
   const itemToMove = values.find((item) => item.id === moveId);
   if (!itemToMove) return;
+  const itemDropped = values.find((item) => item.id === dropId);
+  if (!itemDropped) return;
 
   comp.values = values
     .filter((i) => i.id !== moveId)

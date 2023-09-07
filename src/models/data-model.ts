@@ -1,5 +1,6 @@
 import { Translate, Options } from 'translate.js';
 import { messages } from '../services';
+import { uniqueId } from 'mithril-materialized';
 
 export type DataModel = {
   version?: number;
@@ -323,6 +324,21 @@ export const defaultModel = {
   },
 } as DataModel;
 
+export const emptyModel = {
+  version: 1,
+  lastUpdate: new Date().valueOf(),
+  scenario: {
+    id: uniqueId(),
+    label: 'NEW SCENARIO',
+    desc: '',
+    inconsistencies: {} as Inconsistencies,
+    categories: [],
+    components: [],
+    narratives: [],
+    thresholdColors,
+  },
+} as DataModel;
+
 /**
  * Set of default models that can be used to create a new scenario
  *
@@ -330,7 +346,7 @@ export const defaultModel = {
  *    MODEL_NAME, MODEL_DESC
  * where the index of the model should match.
  */
-export const defaultModels: DataModel[] = [defaultModel];
+export const defaultModels: DataModel[] = [defaultModel, emptyModel];
 
 export type ID = string;
 
