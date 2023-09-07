@@ -3,10 +3,8 @@ import {
   Dashboards,
   ContextualItem,
   ScenarioComponent,
-  OsmTypes,
   ID,
   ContextType,
-  contextTypeOptions,
   Color,
 } from '../models';
 import {
