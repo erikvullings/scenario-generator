@@ -41,7 +41,7 @@ const setTitle = (title: string) => {
 
 /* Actions */
 
-export const setPage = (cell: MeiosisCell<State>, page: Dashboards) =>
+export const setPage = (cell: MeiosisCell<State>, page: Dashboards): void =>
   cell.update({ page });
 
 export const changePage = (

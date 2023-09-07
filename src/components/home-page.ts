@@ -1,4 +1,4 @@
-import m, { FactoryComponent } from 'mithril';
+import m from 'mithril';
 import {
   Button,
   Icon,
@@ -28,14 +28,14 @@ import {
   ScenarioComponent,
   defaultModels,
 } from '../models';
-import { SAVED, convertFromOld, formatDate } from '../utils';
+import { SAVED, capitalize, convertFromOld, formatDate } from '../utils';
 
-const TableView: FactoryComponent<{
+const TableView: MeiosisComponent<{
   narratives: Narrative[];
   components: ScenarioComponent[];
 }> = () => {
   return {
-    view: ({ attrs: { components, narratives } }) => {
+    view: ({ attrs: { components, narratives, ...attrs } }) => {
       const lookup = components.reduce((acc, cur) => {
         cur.values &&
           cur.values.forEach((v) => {
@@ -58,7 +58,21 @@ const TableView: FactoryComponent<{
           narratives.map((n) =>
             m(
               'tr',
-              m('td', n.label),
+              m(
+                'th',
+                m(
+                  'a',
+                  {
+                    href: routingSvc.href(Dashboards.SHOW_SCENARIO),
+                    onclick: () => {
+                      attrs.update({
+                        curNarrative: () => n,
+                      });
+                    },
+                  },
+                  capitalize(n.label)
+                )
+              ),
               components.map((c) =>
                 m(
                   'td',
@@ -293,6 +307,7 @@ export const HomePage: MeiosisComponent = () => {
                       tabs: categories.map((c) => ({
                         title: c.label,
                         vnode: m(TableView, {
+                          ...attrs,
                           narratives: selectedNarratives,
                           components: components.filter(
                             (comp) =>
@@ -304,6 +319,7 @@ export const HomePage: MeiosisComponent = () => {
                   : m(
                       '.row.narratives',
                       m(TableView, {
+                        ...attrs,
                         narratives: selectedNarratives,
                         components: components.filter(
                           (comp) =>
