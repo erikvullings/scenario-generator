@@ -185,10 +185,9 @@ export const HomePage: MeiosisComponent = () => {
                 dlAnchorElem.setAttribute('href', dataStr);
                 dlAnchorElem.setAttribute(
                   'download',
-                  `${formatDate()}_v${padLeft(
-                    version,
-                    3
-                  )}_scenario_generator.json`
+                  `${formatDate()}_v${padLeft(version, 3)}_${
+                    model.scenario.label || `scenario_spark`
+                  }.json`
                 );
                 dlAnchorElem.click();
                 localStorage.setItem(SAVED, 'true');
