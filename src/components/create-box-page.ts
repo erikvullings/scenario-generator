@@ -79,10 +79,8 @@ const BoxItem: MeiosisComponent<{
             const data = ev.dataTransfer?.getData(id);
             if (!data) return;
             const [_, itemId] = JSON.parse(data) as [string, string];
-            const dropTarget = document.getElementById(item.id);
-            if (!itemId || !dropTarget) return;
-            console.log(ev);
-            console.log(itemId);
+            const dropTarget = ev.currentTarget as HTMLDataListElement;
+            if (!itemId || !dropTarget || itemId === item.id) return;
             if (!dropTarget) return;
             const dropY = ev.clientY - dropTarget.getBoundingClientRect().top;
             const dropHeight = dropTarget.clientHeight;
@@ -117,11 +115,11 @@ const BoxItem: MeiosisComponent<{
               className: 'top-right widget-link',
               iconName: 'edit',
               iconClass: 'no-gutter',
-              modalId: item.id,
+              modalId: `modal_${item.id}`,
             }),
           ]),
           m(ModalPanel, {
-            id: item.id,
+            id: `modal_${item.id}`,
             title: t('EDIT_COMPONENT'),
             fixedFooter: true,
             description: m(
