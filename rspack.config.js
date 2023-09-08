@@ -18,7 +18,7 @@ module.exports = {
     },
     html: [
       {
-        title: 'Scenario Generator',
+        title: 'Scenario Spark',
         publicPath: devMode
           ? undefined
           : 'https://erikvullings.github.io/scenario-generator',
@@ -27,12 +27,12 @@ module.exports = {
         favicon: './src/favicon.ico',
         meta: {
           viewport: 'width=device-width, initial-scale=1',
-          'og:title': 'Scenario Generator',
+          'og:title': 'Scenario Spark',
           'og:description':
-            "Specify your organization's capabilities, assess, and develop them.",
+            'Generate consistent threat scenarios for your organisation.',
           'og:url': 'https://erikvullings.github.io/scenario-generator/',
-          'og:site_name': 'Scenario Generator',
-          'og:image:alt': 'Scenario Generator',
+          'og:site_name': 'Scenario Spark',
+          'og:image:alt': 'Scenario Spark',
           'og:image': './src/assets/logo.svg',
           'og:image:type': 'image/svg',
           'og:image:width': '200',
