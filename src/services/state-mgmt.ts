@@ -65,6 +65,9 @@ const validateScenario = (scenario?: Scenario) => {
   if (!scenario.categories) scenario.categories = [];
   if (!scenario.components) scenario.components = [];
   if (!scenario.narratives) scenario.narratives = [];
+  if (typeof scenario.hideInconsistentValues === 'undefined') {
+    scenario.hideInconsistentValues = true;
+  }
   if (!scenario.thresholdColors) scenario.thresholdColors = thresholdColors;
   scenario.narratives.forEach((c) => {
     if (!c.components) c.components = {};

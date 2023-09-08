@@ -36,6 +36,7 @@ const ToggleIcon: FactoryComponent<{
 
 export const CategoryTable: MeiosisComponent<{
   catId: ID;
+  excluded: Set<string>;
 }> = () => {
   let lockState = false;
 
@@ -43,6 +44,7 @@ export const CategoryTable: MeiosisComponent<{
     view: ({ attrs }) => {
       const {
         catId,
+        excluded,
         state: {
           model,
           excludedComps = {},
@@ -102,15 +104,15 @@ export const CategoryTable: MeiosisComponent<{
             [
               m(Select, {
                 label: c.label,
-                key: `key${excludedComps[c.id]}`,
-                placeholder: ' ',
+                key: `key_${c.id}_${excludedComps[c.id]}`,
                 className: 'col s11',
                 multiple: true,
                 disabled:
                   typeof excludedComps[c.id] !== 'undefined' &&
                   excludedComps[c.id],
                 initialValue: components[c.id],
-                options: c.values,
+                options: c.values?.filter((c) => !excluded.has(c.id)),
+                placeholder: t('i18n', 'pick'),
                 onchange: (ids) => {
                   if (!curNarrative.components) {
                     curNarrative.components = {};
@@ -167,8 +169,23 @@ export const CreateScenarioPage: MeiosisComponent = () => {
       const {
         state: { model, curNarrative = {} as Narrative, lockedComps = {} },
       } = attrs;
-      const { categories = [] } = model.scenario;
+      const {
+        categories = [],
+        inconsistencies = {},
+        hideInconsistentValues = false,
+      } = model.scenario;
       const narratives = model.scenario && model.scenario.narratives;
+      const excluded =
+        curNarrative.components && hideInconsistentValues
+          ? Object.keys(curNarrative.components).reduce((acc, cur) => {
+              curNarrative.components[cur].forEach(
+                (v) =>
+                  inconsistencies[v] &&
+                  Object.keys(inconsistencies[v]).forEach((id) => acc.add(id))
+              );
+              return acc;
+            }, new Set<string>())
+          : new Set<string>();
 
       return m('.create-scenario.row', [
         m('.col.s12', [
@@ -314,6 +331,7 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               m(CategoryTable, {
                 ...attrs,
                 catId: c.id,
+                excluded,
               })
             )
           ),

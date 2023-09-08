@@ -220,6 +220,7 @@ export const convertFromOld = (old: OldDataModel): DataModel => {
         acc.scenario.id = scenario.id;
         acc.scenario.label = scenario.name;
         acc.scenario.desc = scenario.desc;
+        acc.scenario.hideInconsistentValues = true;
         acc.scenario.inconsistencies = scenario.inconsistencies.reduce(
           (acc, cur) => {
             const {
@@ -416,8 +417,6 @@ export const generateNarrative = (
           catComp.values
             .map(({ id }) => id)
             .filter((id) => !excluded.includes(id));
-        console.table(excluded);
-        console.table(valuesToChooseFrom);
         if (!valuesToChooseFrom || valuesToChooseFrom.length === 0)
           return false;
         const v = getRandomValue(valuesToChooseFrom);

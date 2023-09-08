@@ -66,7 +66,13 @@ export const InconsistencyCheckbox: FactoryComponent<{
 export const SettingsPage: MeiosisComponent = () => {
   const form = [
     { id: 'id', autogenerate: 'id' },
-    { id: 'label', type: 'text', label: t('NAME') },
+    { id: 'label', type: 'text', className: 'col s6', label: t('NAME') },
+    {
+      id: 'hideInconsistentValues',
+      type: 'checkbox',
+      className: 'col s6 mt25',
+      label: t('HIDE_INCONSISTENT'),
+    },
     { id: 'desc', type: 'textarea', label: t('DESCRIPTION') },
     {
       id: 'categories',
@@ -180,21 +186,27 @@ export const SettingsPage: MeiosisComponent = () => {
             tabs: [
               {
                 title: t('MODEL'),
-                vnode: m('.model-settings.row', [
-                  m(FlatButton, {
-                    className: 'right',
-                    iconName: 'delete',
-                    label: t('DELETE'),
-                    modalId: 'deleteModel',
-                  }),
-                  m(LayoutForm, {
-                    obj: model.scenario,
-                    form,
-                    i18n: i18n.i18n,
-                    onchange: async () => {
-                      await saveModel(attrs, model);
-                    },
-                  } as FormAttributes<Scenario>),
+                vnode: m('.model-settings', [
+                  m(
+                    '.row',
+                    m(FlatButton, {
+                      className: 'right',
+                      iconName: 'delete',
+                      label: t('DELETE'),
+                      modalId: 'deleteModel',
+                    })
+                  ),
+                  m(
+                    '.row',
+                    m(LayoutForm, {
+                      obj: model.scenario,
+                      form,
+                      i18n: i18n.i18n,
+                      onchange: async () => {
+                        await saveModel(attrs, model);
+                      },
+                    } as FormAttributes<Scenario>)
+                  ),
                 ]),
               },
               {

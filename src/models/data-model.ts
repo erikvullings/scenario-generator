@@ -120,6 +120,8 @@ export type Color = string;
 export type ThresholdColor = { threshold: number; color: Color };
 
 export type Scenario = Item & {
+  /** If true, do not show inconsistent combinations between components */
+  hideInconsistentValues: boolean;
   /** Combinations of scenario components that should not be used together */
   inconsistencies: Inconsistencies;
   /** Categories of components */
@@ -170,6 +172,7 @@ export const defaultModel = {
     id: 'demo1',
     label: 'Demo',
     desc: 'Demo scenario',
+    hideInconsistentValues: true,
     inconsistencies: {} as Inconsistencies,
     categories: [
       {
@@ -204,7 +207,7 @@ export const defaultModel = {
         values: [
           { id: 'df62efe6', label: 'Hannibal' },
           { id: '70630364', label: 'The Romans' },
-          { id: '82d5d4f5', label: 'Verweggistan' },
+          { id: '82d5d4f5', label: 'Herbert Hoover' },
         ],
       },
       {
@@ -331,6 +334,7 @@ export const emptyModel = {
     id: uniqueId(),
     label: 'NEW SCENARIO',
     desc: '',
+    hideInconsistentValues: true,
     inconsistencies: {} as Inconsistencies,
     categories: [],
     components: [],

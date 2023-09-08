@@ -341,11 +341,11 @@ li.collection-item:first-child {
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 300px;
+  width: 320px;
   background-color: black;
   color: #fff;
   text-align: center;
-  padding: 5px 0;
+  padding: 5px;
   border-radius: 6px;
   font-size: 1rem;
   line-height: 2rem;
@@ -487,31 +487,6 @@ ul.projects > li > span.project-id {
 }
 .input-field.options {
   margin-top: 3rem;
-}
-
-.muf-rating {
-  width: 100%;
-  padding: 0.5rem 0;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
-}
-.muf-rating > .label {
-  width: 50%;
-}
-.muf-rating > .radios {
-  width: 50%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: flex-end;
-}
-.muf-rating > .radios > label {
-  display: inline-block;
-  padding: 0 0.1rem 1rem 0.1rem;
-  text-align: center;
-}
-.muf-rating > .radios > label > input[type='radio'] {
-  opacity: 1;
 }
 
 .condensed .input-field {

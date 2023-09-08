@@ -94,6 +94,8 @@ export const messages = {
     agree: 'Yes',
     /** Label for the disagree button of the RepeatList */
     disagree: 'No',
+    /** Pick */
+    pick: 'Pick',
     /** Pick one */
     pickOne: 'Pick one',
     /** Pick one or more */
@@ -170,6 +172,7 @@ export const messages = {
   SPEC_CATS:
     'First specify some categories, where each category contains some key factors.',
   EXPORT2WORD: 'Export to Word',
+  HIDE_INCONSISTENT: 'Hide inconsistent combinations',
 };
 
 export const messagesNL: typeof messages = {
@@ -262,6 +265,8 @@ export const messagesNL: typeof messages = {
     agree: 'Ja',
     /** Label for the disagree button of the RepeatList */
     disagree: 'Nee',
+    /** Pick */
+    pick: 'Kies',
     /** Pick one */
     pickOne: 'Kies één',
     /** Pick one or more */
@@ -338,6 +343,7 @@ export const messagesNL: typeof messages = {
   SPEC_CATS:
     'Definieer eerst 1 of 2 categorieën, met in iedere categorie enkele hoofdfactoren.',
   EXPORT2WORD: 'Exporteer naar Word',
+  HIDE_INCONSISTENT: 'Toon geen inconsistente combinaties',
 };
 
 const setGuiLanguage = (language: Languages) => {
