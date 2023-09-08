@@ -10,9 +10,9 @@ import {
   TextInput,
   uniqueId,
 } from 'mithril-materialized';
-import { Dashboards, ID, Narrative, Scenario } from '../models';
+import { Dashboards, ID, Narrative } from '../models';
 import { MeiosisComponent, saveModel, setPage, t } from '../services';
-import { deepCopy, getRandomValue } from '../utils';
+import { deepCopy, generateNarrative } from '../utils';
 
 const ToggleIcon: FactoryComponent<{
   on: string;
@@ -155,82 +155,6 @@ export const CategoryTable: MeiosisComponent<{
       );
     },
   };
-};
-
-const generateNarrative = (
-  scenario: Scenario,
-  locked: Record<ID, ID[]> = {}
-  // excludedComps: Record<ID, boolean> = {}
-) => {
-  const { categories, components, inconsistencies } = scenario;
-
-  // const chosen = { ...locked } as Record<ID, ID>;
-  let tries = 0;
-  const generate = () => {
-    const chosen = { ...locked } as Record<ID, ID[]>;
-    for (const category of categories) {
-      const catComps = components
-        .filter(
-          (c) => category.componentIds && category.componentIds.includes(c.id)
-        )
-        .map((c) => ({ ...c, inc: inconsistencies[c.id] }))
-        .sort((a, b) =>
-          a.inc && b.inc
-            ? Object.keys(a.inc).length > Object.keys(b.inc).length
-              ? 1
-              : -1
-            : a.inc
-            ? 1
-            : b.inc
-            ? -1
-            : 1
-        );
-      const excluded: ID[] = [];
-      for (const catComp of catComps) {
-        if (chosen.hasOwnProperty(catComp.id)) {
-          const chosenValue = chosen[catComp.id];
-          if (
-            chosenValue &&
-            chosenValue.length &&
-            inconsistencies.hasOwnProperty(chosenValue[0])
-          ) {
-            Object.keys(inconsistencies[chosenValue[0]]).forEach((id) =>
-              excluded.push(id)
-            );
-          }
-          continue;
-        }
-        const valuesToChooseFrom =
-          catComp.values &&
-          catComp.values
-            .map(({ id }) => id)
-            .filter((id) => !excluded.includes(id));
-        if (!valuesToChooseFrom || valuesToChooseFrom.length === 0)
-          return false;
-        const value = getRandomValue(valuesToChooseFrom);
-        if (value) {
-          chosen[catComp.id] = [value];
-        } else {
-          return false;
-        }
-      }
-    }
-    return chosen;
-  };
-
-  do {
-    const components = generate();
-    if (components) {
-      const narrative = {
-        id: uniqueId(),
-        components,
-        included: false,
-      } as Narrative;
-      return narrative;
-    }
-    tries++;
-  } while (tries < 100);
-  return false;
 };
 
 export const CreateScenarioPage: MeiosisComponent = () => {

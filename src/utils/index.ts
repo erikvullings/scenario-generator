@@ -1,11 +1,12 @@
 import m from 'mithril';
-import { padLeft } from 'mithril-materialized';
+import { padLeft, uniqueId } from 'mithril-materialized';
 import { render } from 'mithril-ui-form';
 import {
   ContextType,
   DataModel,
   ID,
   Inconsistencies,
+  Narrative,
   OldDataModel,
   OsmTypeList,
   Scenario,
@@ -365,4 +366,84 @@ export const modelToSaveName = (model: DataModel, narrativeName?: string) => {
     model.version || 1,
     3
   )}_${formatDate()}`;
+};
+
+export const generateNarrative = (
+  scenario: Scenario,
+  locked: Record<ID, ID[]> = {}
+) => {
+  const { categories, components, inconsistencies } = scenario;
+
+  let tries = 0;
+  const generate = () => {
+    const chosen = { ...locked } as Record<ID, ID[]>;
+    for (const category of categories) {
+      const catComps = components
+        .filter(
+          (c) => category.componentIds && category.componentIds.includes(c.id)
+        )
+        .map((c) => {
+          const inc = c.values
+            ? c.values.reduce((acc, cur) => {
+                return (
+                  acc +
+                  (inconsistencies[cur.id]
+                    ? Object.keys(inconsistencies[cur.id]).length
+                    : 0)
+                );
+              }, 0)
+            : 0;
+          return { ...c, inc };
+        })
+        .sort((a, b) => (a.inc > b.inc ? -1 : 1));
+      const excluded: ID[] = [];
+      for (const catComp of catComps) {
+        if (chosen.hasOwnProperty(catComp.id)) {
+          const chosenValue = chosen[catComp.id];
+          if (chosenValue && chosenValue.length) {
+            if (chosenValue.some((v) => excluded.includes(v))) return false;
+            chosenValue.forEach((v) => {
+              inconsistencies[v] &&
+                Object.keys(inconsistencies[v]).forEach((id) =>
+                  excluded.push(id)
+                );
+            });
+          }
+          continue;
+        }
+        const valuesToChooseFrom =
+          catComp.values &&
+          catComp.values
+            .map(({ id }) => id)
+            .filter((id) => !excluded.includes(id));
+        console.table(excluded);
+        console.table(valuesToChooseFrom);
+        if (!valuesToChooseFrom || valuesToChooseFrom.length === 0)
+          return false;
+        const v = getRandomValue(valuesToChooseFrom);
+        if (v) {
+          inconsistencies[v] &&
+            Object.keys(inconsistencies[v]).forEach((id) => excluded.push(id));
+          chosen[catComp.id] = [v];
+        } else {
+          return false;
+        }
+      }
+    }
+    return chosen;
+  };
+
+  do {
+    const components = generate();
+    if (components) {
+      const narrative = {
+        id: uniqueId(),
+        components,
+        included: false,
+      } as Narrative;
+      return narrative;
+    }
+    tries++;
+  } while (tries < 100);
+  return false;
 };
