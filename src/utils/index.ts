@@ -405,8 +405,8 @@ export const generateNarrative = (
             if (chosenValue.some((v) => excluded.includes(v))) return false;
             chosenValue.forEach((v) => {
               inconsistencies[v] &&
-                Object.keys(inconsistencies[v]).forEach((id) =>
-                  excluded.push(id)
+                Object.keys(inconsistencies[v]).forEach(
+                  (id) => inconsistencies[v][id] && excluded.push(id)
                 );
             });
           }
@@ -422,7 +422,9 @@ export const generateNarrative = (
         const v = getRandomValue(valuesToChooseFrom);
         if (v) {
           inconsistencies[v] &&
-            Object.keys(inconsistencies[v]).forEach((id) => excluded.push(id));
+            Object.keys(inconsistencies[v]).forEach(
+              (id) => inconsistencies[v][id] && excluded.push(id)
+            );
           chosen[catComp.id] = [v];
         } else {
           return false;

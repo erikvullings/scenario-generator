@@ -181,7 +181,9 @@ export const CreateScenarioPage: MeiosisComponent = () => {
               curNarrative.components[cur].forEach(
                 (v) =>
                   inconsistencies[v] &&
-                  Object.keys(inconsistencies[v]).forEach((id) => acc.add(id))
+                  Object.keys(inconsistencies[v]).forEach(
+                    (id) => inconsistencies[v][id] && acc.add(id)
+                  )
               );
               return acc;
             }, new Set<string>())
