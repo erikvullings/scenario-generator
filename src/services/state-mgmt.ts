@@ -12,12 +12,16 @@ import {
   thresholdColors,
 } from '../models';
 import { ldb } from '../utils/local-ldb';
-import { MeiosisCell, Update } from 'meiosis-setup/types';
+import {
+  MeiosisCell,
+  Service,
+  Update,
+  MeiosisComponent as MComp,
+} from 'meiosis-setup/types';
 import { LANGUAGE, SAVED } from '../utils';
 import { uniqueId } from 'mithril-materialized';
 
 const MODEL_KEY = 'SG_MODEL';
-const SCENARIO_TITLE = 'SG_JOURNAL_TITLE';
 
 export type State = {
   page: Dashboards;
@@ -36,7 +40,7 @@ export type State = {
 export type MeiosisComponent<T = {}> = FactoryComponent<MeiosisCell<State> & T>;
 
 const setTitle = (title: string) => {
-  document.title = `Scenario Generator: ${title}`;
+  document.title = `Scenario Spark: ${title}`;
 };
 
 /* Actions */
@@ -183,8 +187,7 @@ export const setLanguage = async (locale = i18n.currentLocale) => {
 const initialize = async (update: Update<State>) => {
   const ds = await ldb.get(MODEL_KEY);
   const model = ds ? JSON.parse(ds) : defaultModel;
-  const t = await ldb.get(SCENARIO_TITLE);
-  const title = t ? t : '';
+  const title = model.scenario?.label || '';
   setTitle(title);
 
   update({
@@ -193,13 +196,22 @@ const initialize = async (update: Update<State>) => {
   });
 };
 
-const app = {
+const service: Service<State> = {
+  onchange: (state) => state.model?.scenario?.label,
+  run: (cell) => {
+    const title = cell.state.model?.scenario?.label;
+    setTitle(title);
+    cell.update({ title });
+  },
+};
+
+const app: MComp<State> = {
+  services: [service],
   initial: {
     title: '',
     page: Dashboards.HOME,
     model: defaultModel,
-    // t: setGuiLanguage('en'),
-  } as State,
+  },
 };
 export const cells = meiosisSetup<State>({ app });
 initialize(cells().update);
