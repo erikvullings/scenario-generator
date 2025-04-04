@@ -1,6 +1,6 @@
 # Scenario generator
 
-DISCONTINUED HERE, MOVED TO [SCENAARIO-SPARK]](https://github.com/TNO/scenario-spark).
+DISCONTINUED HERE, MOVED TO [SCENARIO-SPARK]](https://github.com/TNO/scenario-spark).
 
 Generate a threat scenario from a self-defined morphological box.
 
